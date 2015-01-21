@@ -8,6 +8,7 @@
     </parent>
     <groupId>org.brutusin</groupId>
     <artifactId>jsonsrv</artifactId>
+    <packaging>jar</packaging>   
     <version>1.0.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A lightweight, jar-packaged, self-describing, JSON RPC service framework for JEE (servlet-based) for easily exposing your business methods through a JSON over HTTP API.</description>
