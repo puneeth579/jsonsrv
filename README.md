@@ -39,7 +39,7 @@ Aimed at creating AJAX/JSON web interfaces.
 
 ##Usage
 ###Maven dependency 
-This library is meant to be used by a java web module. If you are using maven, add this dependency to your war `pom.xml`. Temporary you may need to add the brutusin release respository to your maven configuration if not already done (explained [here](../../../tree/master/))
+This library is meant to be used by a java web module. If you are using maven, add this dependency to your war `pom.xml`.
 ```xml
 <dependency>
     <groupId>org.brutusin</groupId>
