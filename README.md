@@ -246,7 +246,7 @@ This module could not be possible without:
 * [org.brutusin:jsonsrv-example](https://github.com/brutusin/jsonsrv-example)
 
 ## Support, bugs and requests
-https://github.com/brutusin/repository/issues
+https://github.com/brutusin/jsonsrv/issues
 
 ## Authors
 
