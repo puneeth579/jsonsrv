@@ -212,7 +212,7 @@ Pragma:no-cache
 ##Configuration and extensions
 
 ### Custom renderers
-Once the framework servlet has processed the request and generated a JSON message to be returned, it sets the status code and the content type of the response and delegates the response rendering (writing to the HTTP response body) to a [Renderer](src/main/java/org/brutusin/jsonsrv/plugins/Renderer.java).
+Once the framework servlet has processed the request and generated a JSON message to be returned, it sets the status code and the content type of the response and delegates the response rendering (writing to the HTTP response body) to a [Renderer](src/main/java/org/brutusin/jsonsrv/plugin/Renderer.java).
 The [default renderer](src/main/java/org/brutusin/jsonsrv/impl/DefaultRenderer.java) simply writes the payload to the response writer:
 ```java
 resp.getWriter().print(json); // being resp a HttpServletResponse
