@@ -39,7 +39,7 @@ Aimed at creating AJAX/JSON web interfaces.
 
 ##Usage
 ###Maven dependency 
-This library is meant to be used by a java web module. If you are using maven, add this dependency to your war `pom.xml`.
+This library is meant to be used by a java web module. If you are using maven, add this dependency to your war `pom.xml`:
 ```xml
 <dependency>
     <groupId>org.brutusin</groupId>
@@ -47,7 +47,7 @@ This library is meant to be used by a java web module. If you are using maven, a
     <version>1.0.0</version>
 </dependency>
 ```
-If you are not using maven and need help ask [here](#support-bugs-and-requests)
+If you are not using maven and need help ask [here](#support-bugs-and-requests).
 
 ###Web module configuration
 In the `web.xml` configure the following mapping for the framework servlet, [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java):
