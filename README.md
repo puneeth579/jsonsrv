@@ -44,7 +44,7 @@ This library is meant to be used by a java web module. If you are using maven, a
 <dependency>
     <groupId>org.brutusin</groupId>
     <artifactId>jsonsrv</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 If you are not using maven and need help ask [here](#support-bugs-and-requests)
