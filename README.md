@@ -217,7 +217,7 @@ The [default renderer](src/main/java/org/brutusin/jsonsrv/impl/DefaultRenderer.j
 ```java
 resp.getWriter().print(json); // being resp a HttpServletResponse
 ``` 
-More advanced functionality can be plugged using custom renderers; for example, [jsonsrv-human-renderer module](../../../tree/master/jsonsrv-human-renderer) that adds and extra "human" mode that eases service testing and enhances readability, by the automatic creation of HTML forms from the input schema of the service.
+More advanced functionality can be plugged using custom renderers; for example, [jsonsrv-human-renderer module](https://github.com/brutusin/jsonsrv-human-renderer) that adds and extra "human" mode that eases service testing and enhances readability, by the automatic creation of HTML forms from the input schema of the service.
 
 In the next sections, it is explained how to configure a custom render. 
 
@@ -233,7 +233,7 @@ The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java
 * `protected ObjectMapper getObjectMapper()`: To use a custom [ObjectMapper](http://fasterxml.github.io/jackson-databind/javadoc/2.3.0/com/fasterxml/jackson/databind/ObjectMapper.html) in the JSON to Java binding.
 
 ##Example:
-A complete example project is available at [jsonsrv-example](../../../tree/master/jsonsrv-example).  
+A complete example project is available at [jsonsrv-example](https://github.com/brutusin/jsonsrv-example).  
 
 ##Main stack
 This module could not be possible without:
@@ -242,8 +242,8 @@ This module could not be possible without:
 * [com.github.fge:json-schema-validator](https://github.com/fge/json-schema-validator) for validation against a JSON schema
 
 ## Brutusin dependent modules
-* [org.brutusin:jsonsrv-human-renderer](../../../tree/master/jsonsrv-human-renderer)
-* [org.brutusin:jsonsrv-example](../../../tree/master/jsonsrv-example)
+* [org.brutusin:jsonsrv-human-renderer](https://github.com/brutusin/jsonsrv-human-renderer)
+* [org.brutusin:jsonsrv-example](https://github.com/brutusin/jsonsrv-example)
 
 ## Support, bugs and requests
 https://github.com/brutusin/repository/issues
