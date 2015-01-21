@@ -152,7 +152,6 @@ public class JsonServlet extends HttpServlet {
         if (schemaParameterDisabled) {
             schemaParam = null;
         }
-
         resp.setContentType("application/json");
         JsonResponse jsonResponse = null;
         String json;
