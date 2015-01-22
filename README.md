@@ -69,9 +69,9 @@ In the `web.xml` configure the following mapping for the framework servlet, [Jso
 This way, all requests under the `/srv` path will be processed by it.
 
 ###Service implementation
-Just extend from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), and ensure to define your input/output parameters as POJOs.
+Just extend from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), and ensure to define your input/output parameters as [JavaBeans](http://en.wikipedia.org/wiki/JavaBeans).
 
-Example
+Example:
 ```java
 package org.brutusin.jsonsrv.example;
 
