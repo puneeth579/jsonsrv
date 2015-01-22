@@ -47,15 +47,15 @@ public abstract class JsonAction<I, O> {
         }
     }
 
-    public JsonSchema getValidationInputSchema() {
+    public final JsonSchema getValidationInputSchema() {
         return validationInputSchema;
     }
 
-    public String getInputSchema() {
+    public final String getInputSchema() {
         return inputSchema;
     }
 
-    public String getOutputSchema() {
+    public final String getOutputSchema() {
         return outputSchema;
     }
 
