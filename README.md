@@ -66,7 +66,7 @@ In the `web.xml` configure the following mapping for the framework servlet, [Jso
     </servlet-mapping>
 ...
 ```
-This way, all request under the `/srv` path will be processed by it.
+This way, all requests under the `/srv` path will be processed by it.
 
 ###Service implementation
 Just extend from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), and ensure to define your input/output parameters as POJOs.
