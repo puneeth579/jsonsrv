@@ -48,7 +48,7 @@ This library is meant to be used by a java web module. If you are using maven, a
 ```
 Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%20a%3A%22jsonsrv%22) to see the last available version released to the Maven Central Repository.
 
-If you are not using maven and need help ask [here](#support-bugs-and-requests).
+If you are not using maven and need help you can ask [here](https://github.com/brutusin/jsonsrv/issues).
 
 ###Web module configuration
 In the `web.xml` configure the following mapping for the framework servlet, [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java):
