@@ -17,9 +17,11 @@ Aimed at creating AJAX/JSON web interfaces.
     - [Serialization](#serialization)
     - [Threading issues](#threading-issues)
     - [Schema customization](#schema-customization)
-    - [HTTP response](#http-response)
     - [Response object and error handling](#response-object-and-error-handling)
-    - [Plugin development](#plugin-development)
+    - [HTTP response](#http-response)
+      - [Status codes](#status-codes)
+      - [Content-Type header](#content-type-header)
+      - [Caching](#caching)
   - [Configuration and extensions](#configuration-and-extensions)
     - [Custom renderers](#custom-renderers)
     - [JsonServlet init params](#jsonservlet-init-params)
@@ -177,8 +179,8 @@ Code | Meaning  | Data
 
 ###HTTP response
 Although HTTP responses can be decorated using [custom renderers](#custom-renderers), the default behaviour is as follows:
-####Status code
-Depending on the returned JSON payload:
+####Status codes
+Depending on the returned JSON payload, the following status codes are returned:
 
 [HTTP response status code](http://en.wikipedia.org/wiki/List_of_HTTP_status_codes)| Case
 ------| ------- |
