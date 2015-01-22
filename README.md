@@ -120,7 +120,7 @@ Case | URL  | Return
 ------| ------- | ---------
 Service listing | `srv` | `{"value":["date","exception","hello","version"]}`
 Service execution | `srv?id=example&input=%22world%22` | `{"value":"Hello world!"}`
-Service input schema | `srv?id=example&schema=i` | `"type":"string"}`
+Service input schema | `srv?id=example&schema=i` | `{"type":"string"}`
 Service output schema | `srv?id=example&schema=o` | `{"type":"object","properties":{"error":{"type":"object","properties":{"code":{"type":"integer","required":true},"data":{"type":"any"},"meaning":{"type":"string","required":true},"message":{"type":"string","required":true}}},"value":{"type":"string"}}}`
 
 ## Implementation details
