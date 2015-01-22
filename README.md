@@ -48,7 +48,7 @@ This library is meant to be used by a java web module. If you are using maven, a
     <artifactId>jsonsrv</artifactId>
 </dependency>
 ```
-Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%20a%3A%22jsonsrv%22) to see the lastest available version released to the Maven Central Repository.
+Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%20a%3A%22jsonsrv%22) to see the latest available version released to the Maven Central Repository.
 
 If you are not using maven and need help you can ask [here](https://github.com/brutusin/jsonsrv/issues).
 
