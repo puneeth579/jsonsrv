@@ -13,6 +13,7 @@ Aimed at creating AJAX/JSON web interfaces.
     - [Service implementation](#service-implementation)
     - [Service registration](#service-registration)
     - [Running](#running)
+  - [Action life-cycle](#action-life-cycle)
   - [Implementation details](#implementation-details)
     - [Serialization](#serialization)
     - [Threading issues](#threading-issues)
@@ -71,12 +72,8 @@ This way, all requests under the `/srv` path will be processed by it.
 ###Service implementation
 Just extend from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), and ensure to define your input/output parameters as POJOs.
 
-Example:
+Examples:
 ```java
-package org.brutusin.jsonsrv.example;
-
-import org.brutusin.jsonsrv.JsonAction;
-
 public class HelloWorldAction extends JsonAction<String, String> {
     @Override
     public String execute(String input) throws Exception {
@@ -90,17 +87,55 @@ public class HelloWorldAction extends JsonAction<String, String> {
 }
 ```
 
+```java
+public class GetDateAction extends JsonAction<Void, String> {
+
+    private SimpleDateFormat dateFormat;
+
+    @Override
+    protected void doInit(String initParam) throws Exception {
+        if (initParam != null) {
+            dateFormat = new SimpleDateFormat(initParam);
+        } else {
+            dateFormat = new SimpleDateFormat();
+        }
+    }
+
+    @Override
+    public String execute(Void input) throws Exception {
+        return dateFormat.format(new Date());
+    }
+}
+```
+
 ###Service registration
 Register the actions in order to the framework can find them, by creating a `jsonsrv.json` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.json")`).
 
 Example:
 ```json
 [
-  {"id": "hello",    "className": "org.brutusin.jsonsrv.example.complex.HelloWorldAction"},
-  {"id": "date",     "className": "org.brutusin.jsonsrv.example.GetDateAction"},
-  {"id": "exception","className": "org.brutusin.jsonsrv.example.ExceptionAction"}
+  {
+    "id": "hello",
+    "className": "org.brutusin.jsonsrv.example.complex.HelloWorldAction"
+  },
+  {
+    "id": "exception",
+    "className": "org.brutusin.jsonsrv.example.ExceptionAction"
+  },
+  {
+    "id": "date",
+    "className": "org.brutusin.jsonsrv.example.GetDateAction",
+    "initParam": "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+  },
+  {
+    "id": "time",
+    "className": "org.brutusin.jsonsrv.example.GetDateAction",
+    "initParam": "h:mm a"
+  }
 ]
 ```
+Notice that the same action class can be used by different services, and an optional `initParam` can be passed to the actions. 
+
 
 ###Running
 
@@ -122,6 +157,12 @@ Service listing | `srv` | `{"value":["date","exception","hello","version"]}`
 Service execution | `srv?id=example&input=%22world%22` | `{"value":"Hello world!"}`
 Service input schema | `srv?id=example&schema=i` | `{"type":"string"}`
 Service output schema | `srv?id=example&schema=o` | `{"type":"object","properties":{"error":{"type":"object","properties":{"code":{"type":"integer","required":true},"data":{"type":"any"},"meaning":{"type":"string","required":true},"message":{"type":"string","required":true}}},"value":{"type":"string"}}}`
+
+## Action life-cycle
+On servlet initialization, the `jsonsrv.json` is loaded and an eager initialization of the services is performed this way: A single instance of the action is bound to the service id and its 
+`protected void doInit(String initParam)` is executed.
+
+Then this action instance is ready to serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
 
 ## Implementation details
 ###Serialization
