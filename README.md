@@ -127,7 +127,7 @@ Service output schema | `srv?id=example&schema=o` | `{"type":"object","propertie
 ###Serialization
 Use POJOs as the service aguments/return types, and avoid cyclic references. See [jackson-databind documentation](https://github.com/FasterXML/jackson-databind) for more details.
 ###Threading issues
-The framework creates a single instance per action class to serve all requests, that is, actions will run on a multithreaded environment, so be aware that they must handle concurrent requests and be careful to synchronize access to shared resources.
+The framework creates a single action instance per service (action mapping in `jsonsrv.json`) to serve all requests, that is, actions will run on a multithreaded environment, so be aware that they must handle concurrent requests and be careful to synchronize access to shared resources.
 ###Schema customization
 See [jackson-module-jsonSchema documentation](https://github.com/FasterXML/jackson-module-jsonSchema) for supported schema generation features, like:
 * Required properties

@@ -27,6 +27,7 @@ public abstract class JsonAction<I, O> {
 
     private final Class<I> inputClass;
     private final Class<O> outputClass;
+    private String initParam;
     private String inputSchema;
     private String outputSchema;
     private JsonSchema validationInputSchema;
@@ -37,7 +38,7 @@ public abstract class JsonAction<I, O> {
         this.outputClass = (Class<O>) types[1];
     }
     
-    public final void init(JsonHelper jsonHelper) {
+    public final void init(JsonHelper jsonHelper, String initParam) {
         this.inputSchema = jsonHelper.getSchemaHelper().getSchemaString(getInputClass());
         this.outputSchema = jsonHelper.getSchemaHelper().getSchemaString(JsonResponse.class).replace("\"value\":{\"type\":\"any\"}", "\"value\":" + jsonHelper.getSchemaHelper().getSchemaString(getOutputClass()));
         try {
@@ -45,6 +46,11 @@ public abstract class JsonAction<I, O> {
         } catch (Exception ex) {
             throw new Error(ex);
         }
+        this.initParam = initParam;
+    }
+
+    public final String getInitParam() {
+        return initParam;
     }
 
     public final JsonSchema getValidationInputSchema() {

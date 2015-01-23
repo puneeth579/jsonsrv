@@ -327,7 +327,7 @@ public class JsonServlet extends HttpServlet {
                         throw new Error("Invalid action class found: " + am.getClassName());
                     }
                     JsonAction instance = (JsonAction) clazz.newInstance();
-                    instance.init(this.jsonHelper);
+                    instance.init(this.jsonHelper, am.getInitParam());
                     actions.put(am.getId(), instance);
                 }
             }
