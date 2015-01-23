@@ -25,7 +25,7 @@ Aimed at creating AJAX/JSON web interfaces.
   - [Configuration and extensions](#configuration-and-extensions)
     - [Custom renderers](#custom-renderers)
     - [JsonServlet init params](#jsonservlet-init-params)
-    - [JsonServlet overloadable methods](#jsonservlet-overloadable-methods)
+    - [JsonServlet overridable methods](#jsonservlet-overridable-methods)
   - [Example](#example)
   - [Main stack](#main-stack)
   - [Brutusin dependent modules](#brutusin-dependent-modules)
@@ -230,8 +230,8 @@ The following optional init-params are supported by [JsonServlet](src/main/java/
 * `renderer`: Class name to the custom render to use. If not specified, the default renderer is used 
 * `render-param`: Additional parameter to be passed to the custom renderer, accessible via its `getInitParam()` method
 
-### JsonServlet overloadable methods
-The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overloaded:
+### JsonServlet overridable methods
+The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overriden:
 * `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the renderer class.
 * `protected ObjectMapper getObjectMapper()`: To use a custom [ObjectMapper](http://fasterxml.github.io/jackson-databind/javadoc/2.3.0/com/fasterxml/jackson/databind/ObjectMapper.html) in the JSON to Java binding.
 
