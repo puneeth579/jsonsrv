@@ -151,7 +151,7 @@ URL parameter  | Description
 
 **Use cases**
 
-Case | URL  | Return
+Case | URL  | Sample response payload
 ------| ------- | ---------
 Service listing | `srv` | `{"value":["date","exception","hello","version"]}`
 Service execution | `srv?id=example&input=%22world%22` | `{"value":"Hello world!"}`
