@@ -1,3 +1,4 @@
+![logo](https://raw.githubusercontent.com/brutusin/brutusin.github.io/master/img/brutusin-64.png)
 #org.brutusin:jsonsrv [![Build Status](https://api.travis-ci.org/brutusin/jsonsrv.svg?branch=master)](https://travis-ci.org/brutusin/jsonsrv)
 A lightweight, jar-packaged, self-describing, JSON RPC service framework for JEE (servlet-based) for easily exposing business methods through a JSON over HTTP API. 
 
