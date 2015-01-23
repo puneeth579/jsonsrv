@@ -91,7 +91,7 @@ public class JsonServlet extends HttpServlet {
             } else {
                 renderer = new DefaultRenderer();
             }
-            renderer.setInitParam(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
+            renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
             this.jsonHelper = new JsonHelper(getObjectMapper());
             stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
             loadCfg();

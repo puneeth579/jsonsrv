@@ -73,7 +73,7 @@ public abstract class JsonAction<I, O> {
     }
 
     protected void doInit(String initParam) throws Exception {
-        // to be override
+        // to be overriden
     }
 
     protected abstract O execute(I input) throws Exception;

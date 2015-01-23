@@ -27,14 +27,11 @@ import org.brutusin.jsonsrv.JsonServlet;
  */
 public abstract class Renderer {
 
-    private String initParam;
-
-    public final void setInitParam(String initParam) {
-        this.initParam = initParam;
+    public void init(String initParam) {
+        doInit(initParam); // This non-sense delegation is performed in order to keep an similar notation to JsonAction init/doInit
     }
-
-    public final String getInitParam() {
-        return initParam;
+    
+    protected void doInit(String initParam) {
     }
     
     public abstract void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode) throws IOException;
