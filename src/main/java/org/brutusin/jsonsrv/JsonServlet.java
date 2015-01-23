@@ -244,8 +244,7 @@ public class JsonServlet extends HttpServlet {
     }
 
     protected ClassLoader getClassLoader() {
-        return JsonServlet.class
-                .getClassLoader();
+        return JsonServlet.class.getClassLoader();
     }
 
     protected ObjectMapper getObjectMapper() {

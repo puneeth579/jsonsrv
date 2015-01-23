@@ -32,6 +32,7 @@ public abstract class Renderer {
     }
     
     protected void doInit(String initParam) {
+        // to be overridden
     }
     
     public abstract void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode) throws IOException;
