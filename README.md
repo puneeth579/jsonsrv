@@ -273,7 +273,7 @@ The following optional init-params are supported by [JsonServlet](src/main/java/
 
 ### JsonServlet overridable methods
 The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overriden:
-* `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the renderer class.
+* `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the pluggable resources (configuration file, action classes and render class).
 * `protected ObjectMapper getObjectMapper()`: To use a custom [ObjectMapper](http://fasterxml.github.io/jackson-databind/javadoc/2.3.0/com/fasterxml/jackson/databind/ObjectMapper.html) in the JSON to Java binding.
 
 ##Example:
