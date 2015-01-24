@@ -35,7 +35,7 @@ Aimed at creating AJAX/JSON web interfaces.
   - [License](#license)
 
 ##Features
-* **Self-describing**. Input/output schemas of the service can be obtained using the `schema` url-parameter. Automatic form generation and validation is straightforward using components like https://github.com/exavolt/onde
+* **Self-describing**. Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. Automatic form generation and validation is straightforward using components like https://github.com/exavolt/onde
 * **Automatic conditional caching**. Just tell what is cacheable.
 * **Easy implementation**. Just code your business.
 * **Plugable rendering**. [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
