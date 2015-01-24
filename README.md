@@ -234,7 +234,7 @@ Depending on the returned JSON payload, the following status codes are returned:
 `Content-Type:application/json`
 
 ####Caching
-The framework automatically handles caching issues depending on this three factors: 
+The framework automatically handles caching depending on this three factors: 
 * Execution without error
 * Implementation of the `public boolean isCacheable()` method of the action (by default returns ´false´) 
 * Conditional request header `If-None-Match` present
