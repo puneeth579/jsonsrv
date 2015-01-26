@@ -215,8 +215,8 @@ Code | Meaning  | Description
 ------| ------- | ---------
 -32700|Parse error|Invalid JSON was received by the server. An error occurred on the server while parsing the JSON input
 -32601|Service not found|The service does not exist / is not available
--32602|Invalid input|Invalid service input. Received input does not meet schema restrictions
--32603|Internal error|In case of any uncaught throwable reaching the framework servlet, like those thrown by the `execute(..)` method of the actions
+-32602|Invalid input|Invalid service input. Returned when received input does not meet schema restrictions and when action `execute(..)` method throws an `IllegalArgumentException` 
+-32603|Internal error|In an internal error occurs or action `execute(..)` method throws any other exception.
 
 ###HTTP response
 Although HTTP responses can be decorated using [custom renderers](#custom-renderers), the default behaviour is as follows:
