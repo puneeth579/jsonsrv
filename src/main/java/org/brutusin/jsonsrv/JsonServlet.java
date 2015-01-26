@@ -298,9 +298,12 @@ public class JsonServlet extends HttpServlet {
             Object output = action.execute(input);
             json.setValue(output);
 
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(JsonServlet.class.getName()).log(Level.WARNING, null, ex);
+            json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, Miscellaneous.getRootCauseMessage(ex)));
+            return json;
         } catch (Exception ex) {
-            Logger.getLogger(JsonServlet.class
-                    .getName()).log(Level.WARNING, null, ex);
+            Logger.getLogger(JsonServlet.class.getName()).log(Level.WARNING, null, ex);
             json.setError(json.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
             return json;
         }
