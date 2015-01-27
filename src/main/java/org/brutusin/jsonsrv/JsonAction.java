@@ -37,7 +37,7 @@ public abstract class JsonAction<I, O> {
         this.outputClass = (Class<O>) types[1];
     }
 
-    public final void init(JsonHelper jsonHelper, String initParam) throws Exception {
+    final void init(JsonHelper jsonHelper) throws Exception {
         this.inputSchema = jsonHelper.getSchemaHelper().getSchemaString(getInputClass());
         this.outputSchema = jsonHelper.getSchemaHelper().getSchemaString(JsonResponse.class).replace("\"value\":{\"type\":\"any\"}", "\"value\":" + jsonHelper.getSchemaHelper().getSchemaString(getOutputClass()));
         try {
@@ -45,35 +45,30 @@ public abstract class JsonAction<I, O> {
         } catch (Exception ex) {
             throw new Error(ex);
         }
-        doInit(initParam);
     }
 
-    public final JsonSchema getValidationInputSchema() {
+    final JsonSchema getValidationInputSchema() {
         return validationInputSchema;
     }
 
-    public final String getInputSchema() {
+    final String getInputSchema() {
         return inputSchema;
     }
 
-    public final String getOutputSchema() {
+    final String getOutputSchema() {
         return outputSchema;
     }
 
-    public final Class<I> getInputClass() {
+    final Class<I> getInputClass() {
         return inputClass;
     }
 
-    public final Class<O> getOutputClass() {
+    final Class<O> getOutputClass() {
         return outputClass;
     }
 
-    public boolean isCacheable() {
+    protected boolean isCacheable() {
         return false;
-    }
-
-    protected void doInit(String initParam) throws Exception {
-        // to be overridden
     }
 
     protected abstract O execute(I input) throws Exception;

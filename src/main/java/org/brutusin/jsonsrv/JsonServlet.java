@@ -97,6 +97,10 @@ public class JsonServlet extends HttpServlet {
             this.jsonHelper = new JsonHelper(getObjectMapper());
             stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
             actions = loadActions();
+            for (Map.Entry<String, JsonAction> entry : actions.entrySet()) {
+                JsonAction action = entry.getValue();
+                action.init(jsonHelper);
+            }
         } catch (Exception ex) {
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServletException(ex);
@@ -369,7 +373,6 @@ public class JsonServlet extends HttpServlet {
                         throw new Error("Invalid action class found: " + am.getClassName());
                     }
                     JsonAction instance = (JsonAction) clazz.newInstance();
-                    instance.init(this.jsonHelper, am.getInitParam());
                     ret.put(am.getId(), instance);
                 }
             }

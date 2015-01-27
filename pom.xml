@@ -42,15 +42,27 @@
             <version>1.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>typetools</artifactId>
+            <version>0.4.0</version>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>6.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>net.jodah</groupId>
-            <artifactId>typetools</artifactId>
-            <version>0.4.0</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.1.4.RELEASE</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
