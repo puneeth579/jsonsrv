@@ -23,7 +23,9 @@ import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -224,7 +226,11 @@ public class JsonServlet extends HttpServlet {
         }
         String etag;
         if (cache) {
-            etag = String.valueOf((renderer.getClass() + json).hashCode());
+            resp.addHeader("Cache-Control", "private");
+            etag = "\"" + String.valueOf((renderer.getClass() + json).hashCode()) + "\"";
+            if (req.getMethod().equals("POST")) {
+                addContentLocation(req, resp);
+            }
         } else {
             etag = null;
             if (jsonResponse.getError() == null) {
@@ -241,6 +247,30 @@ public class JsonServlet extends HttpServlet {
         } else {
             resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
+    }
+
+    private static void addContentLocation(HttpServletRequest req, HttpServletResponse resp) {
+        StringBuffer requestURL = req.getRequestURL();
+        Map<String, String[]> parameterMap = req.getParameterMap();
+        boolean first = true;
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            String name = entry.getKey();
+            String[] value = entry.getValue();
+            for (int i = 0; i < value.length; i++) {
+                if (first) {
+                    first = false;
+                    requestURL.append("?");
+                } else {
+                    requestURL.append("&");
+                }
+                try {
+                    requestURL.append(name).append("=").append(URLEncoder.encode(value[i], resp.getCharacterEncoding()));
+                } catch (UnsupportedEncodingException ex) {
+                    throw new AssertionError();
+                }
+            }
+        }
+        resp.addHeader("Content-Location", resp.encodeRedirectURL(requestURL.toString()));
     }
 
     protected ClassLoader getClassLoader() {
