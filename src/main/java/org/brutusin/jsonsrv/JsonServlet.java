@@ -55,20 +55,20 @@ public class JsonServlet extends HttpServlet {
     public static final String INIT_PARAM_RENDERER_PARAM = "render-param";
     public static final String INIT_PARAM_DISABLE_SCHEMA = "schema-parameter-disabled";
 
+    private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM);
+
     public static final String PARAM_ID = "id";
     public static final String PARAM_INPUT = "input";
     public static final String PARAM_SCHEMA = "schema";
-
-    private String stringArraySchema;
-    private JsonHelper jsonHelper;
 
     public enum SchemaMode {
 
         I, O;
     }
 
-    private final Map<String, JsonAction> actions = new HashMap();
-
+    private String stringArraySchema;
+    private JsonHelper jsonHelper;
+    private Map<String, JsonAction> actions;
     private Renderer renderer;
     private boolean schemaParameterDisabled;
 
@@ -78,7 +78,7 @@ public class JsonServlet extends HttpServlet {
             Enumeration<String> initParameterNames = getServletConfig().getInitParameterNames();
             while (initParameterNames.hasMoreElements()) {
                 String initParam = initParameterNames.nextElement();
-                if (!initParam.equals(INIT_PARAM_DISABLE_SCHEMA) && !initParam.equals(INIT_PARAM_RENDERER) && !initParam.equals(INIT_PARAM_RENDERER_PARAM)) {
+                if (getSupportedInitParams() == null || !getSupportedInitParams().contains(initParam)) {
                     throw new ServletException("Unsupported servlet init-param: " + initParam);
                 }
             }
@@ -96,7 +96,7 @@ public class JsonServlet extends HttpServlet {
             renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
             this.jsonHelper = new JsonHelper(getObjectMapper());
             stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
-            loadCfg();
+            actions = loadActions();
         } catch (Exception ex) {
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServletException(ex);
@@ -136,6 +136,10 @@ public class JsonServlet extends HttpServlet {
     @Override
     protected final void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doTrace(req, resp);
+    }
+
+    protected List<String> getSupportedInitParams() {
+        return SUPPORTED_PARAMS;
     }
 
     /**
@@ -346,18 +350,18 @@ public class JsonServlet extends HttpServlet {
         return json;
     }
 
-    private void loadCfg() throws Exception {
+    protected Map<String, JsonAction> loadActions() throws Exception {
+        Map<String, JsonAction> ret = new HashMap();
         Enumeration<URL> urls = getClassLoader().getResources("jsonsrv.json");
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             String fileContents = IOUtils.toString(url.openStream(), "UTF-8");
-            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class
-            );
+            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class);
             if (ams
                     != null) {
                 for (int i = 0; i < ams.length; i++) {
                     ActionMapping am = ams[i];
-                    if (actions.containsKey(am.getId())) {
+                    if (ret.containsKey(am.getId())) {
                         throw new Error("Duplicated mapping found with id " + am.getId());
                     }
                     Class clazz = getClassLoader().loadClass(am.getClassName());
@@ -366,9 +370,10 @@ public class JsonServlet extends HttpServlet {
                     }
                     JsonAction instance = (JsonAction) clazz.newInstance();
                     instance.init(this.jsonHelper, am.getInitParam());
-                    actions.put(am.getId(), instance);
+                    ret.put(am.getId(), instance);
                 }
             }
         }
+        return ret;
     }
 }
