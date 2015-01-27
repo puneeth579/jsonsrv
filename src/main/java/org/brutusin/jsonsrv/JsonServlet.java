@@ -25,7 +25,7 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
- import java.net.URLEncoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -148,7 +148,13 @@ public class JsonServlet extends HttpServlet {
     @Override
     protected final void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
-        String reqETag = req.getHeader("If-None-Match");
+        String reqETag;
+        if (req.getMethod().equals("POST")) {
+            // 304 (Not Modified) can no be returned to a POST request. So If-None-Match is ignored, despite of not being present in a HTTP 1.1 compliant POST request
+            reqETag = null;
+        } else {
+            reqETag = req.getHeader("If-None-Match");
+        }
         String id = req.getParameter(PARAM_ID);
         String schemaParam = req.getParameter(PARAM_SCHEMA);
         if (schemaParameterDisabled) {
