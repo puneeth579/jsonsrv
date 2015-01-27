@@ -245,8 +245,8 @@ The algorithm is as follows:
 * If an error occurred, no caching issues
 * Else if action is cacheable
 	* Compute response *etag* from as a hash of the JSON payload to be returned
-	* If a `If-None-Match` header is present in the request and its value is equals to computed *etag* (meaning that client cache is valid), set response status code to `304 (NOT MODIFIED)` and return no payload
-	* Else, add response header `ETag` with the computed value and return the JSON payload in the HTTP response body
+	* If a `If-None-Match` header is present in the request and its value is equals to computed *etag* (meaning that client cache is fresh), set response status code to `304 (NOT MODIFIED)` and return no payload
+	* Else, add response headers `Cache-Control:private` and `ETag` with the computed value and return the JSON payload in the HTTP response body. Additionally if the method is *POST* ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3) add a `Content-Location` header to the *GET* url
 * Else, return the following response headers:
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
