@@ -154,6 +154,7 @@ Example:
 This way, all requests under the `/srv` path will be processed by it.
 
 ####SpringJsonServlet
+#####Web module configuration
 In the `web.xml` configure the following mapping for this framework servlet:
 
 ```xml
