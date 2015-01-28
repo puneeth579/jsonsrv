@@ -16,7 +16,6 @@
 package org.brutusin.jsonsrv;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.brutusin.commons.json.JsonHelper;
 
 /**
  *
@@ -29,7 +28,8 @@ public class JsonResponse<E> {
         parseError(-32700, "Parse error", "Invalid JSON was received by the server. An error occurred on the server while parsing the JSON input"),
         serviceNotFound(-32601, "Service not found", "The service does not exist / is not available"),
         invalidInput(-32602, "Invalid input", "Invalid service input. Received input does not meet schema restrictions"),
-        internalError(-32603, "Internal error", "Internal service error");
+        internalError(-32603, "Internal error", "Internal service error"),
+        applicationError(-32000,"Application error","Error contemplated by the application logic");
 
         private final int code;
         private final String name;

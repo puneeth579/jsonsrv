@@ -228,12 +228,13 @@ public class JsonServlet extends HttpServlet {
             }
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (jsonResponse != null
-                && jsonResponse.getError() != null) {
+        if (jsonResponse != null && jsonResponse.getError() != null) {
             if (jsonResponse.getError().getCode() == JsonResponse.Error.internalError.getCode()) {
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } else if (jsonResponse.getError().getCode() == JsonResponse.Error.serviceNotFound.getCode()) {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            } else if (jsonResponse.getError().getCode() == JsonResponse.Error.applicationError.getCode()) {
+                // Application error is considered another successful outcome     
             } else {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
@@ -346,9 +347,13 @@ public class JsonServlet extends HttpServlet {
             Logger.getLogger(JsonServlet.class.getName()).log(Level.WARNING, null, ex);
             json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, Miscellaneous.getRootCauseMessage(ex)));
             return json;
-        } catch (Exception ex) {
-            Logger.getLogger(JsonServlet.class.getName()).log(Level.WARNING, null, ex);
+        } catch (RuntimeException ex) {
+            Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
             json.setError(json.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
+            return json;
+        } catch (Exception ex) {
+            Logger.getLogger(JsonServlet.class.getName()).log(Level.INFO, null, ex);
+            json.setError(json.new ErrorDescription(JsonResponse.Error.applicationError, Miscellaneous.getRootCauseMessage(ex)));
             return json;
         }
         return json;
