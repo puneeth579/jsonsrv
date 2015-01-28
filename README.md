@@ -294,7 +294,7 @@ This module could not be possible without:
 https://github.com/brutusin/jsonsrv/issues
 
 ## TODO
-Spring integration, in order to support dependency injection in actions.
+Pending documentation of Spring usage (SpringJsonServlet)
 
 ## Authors
 
