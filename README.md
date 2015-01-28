@@ -4,7 +4,7 @@ A self-describing, java web framework for easily exposing business methods as JS
 Aimed at creating AJAX/JSON web interfaces.
 
 **Main features:**
-* **Self-describing**. Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. Automatic form generation and validation is straightforward using components like https://github.com/exavolt/onde
+* **Self-describing**. Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability 
 * **Implicit HTTP semantics**. Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
 * **Easy implementation**. Business is coded as simple `O execute(I input)` methods . No annotations needed. No serialization concerns.
 * **Plugable rendering**. [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
