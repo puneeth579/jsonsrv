@@ -154,6 +154,11 @@ In the `web.xml` configure the following mapping for this framework servlet:
     <servlet>
         <servlet-name>json-servlet</servlet-name>
         <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
+        <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
+        <init-param>
+            <param-name>spring-cfg</param-name>
+            <param-value>/application-context.xml</param-value>    
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>json-servlet</servlet-name>
@@ -209,8 +214,7 @@ Service input schema | `srv?id=example&schema=i` | `{"type":"string"}`
 Service output schema | `srv?id=example&schema=o` | `{"type":"object","properties":{"error":{"type":"object","properties":{"code":{"type":"integer","required":true},"data":{"type":"any"},"meaning":{"type":"string","required":true},"message":{"type":"string","required":true}}},"value":{"type":"string"}}}`
 
 ## Action life-cycle
-On servlet initialization, the `jsonsrv.json` is loaded and an eager initialization of the services is performed this way: A single instance of the action is bound to the service id and its 
-`protected void doInit(String initParam)` is executed.
+On servlet initialization, the service mappings (id-action class)  are loaded and an eager instantiation of the actions is performed and bound to the service id.
 
 Then this action instance is ready to serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
 
