@@ -217,7 +217,8 @@ Code | Meaning  | Description
 -32700|Parse error|Invalid JSON was received by the server. An error occurred on the server while parsing the JSON input
 -32601|Service not found|The service does not exist / is not available
 -32602|Invalid input|Invalid service input. Returned when received input does not meet schema restrictions and when action `execute(..)` method throws an `IllegalArgumentException` 
--32603|Internal error|In an internal error occurs or action `execute(..)` method throws any other exception.
+-32000|Application error|Error contemplated by the application logic. In case of an checked exception thrown by action `execute(..)`
+-32603|Internal error|In an internal error occurs or action `execute(..)` method throws a unchecked (runtime) exception.
 
 ###HTTP response
 Although HTTP responses can be decorated using [custom renderers](#custom-renderers), the default behaviour is as follows:
@@ -226,7 +227,7 @@ Depending on the returned JSON payload, the following status codes are returned:
 
 [HTTP response status code](http://en.wikipedia.org/wiki/List_of_HTTP_status_codes)| Case
 ------| ------- |
-200/304 | if `error` is `null` (see [Caching section](#caching) for more details)
+200/304 | if `error` is `null` or `error.code` equals `-32000`  (see [Caching section](#caching) for more details)
 400 | if `error.code` equals `-32700` or `-32602`
 404 | if `error.code` equals `-32601`)
 500 | any other error
