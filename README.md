@@ -1,5 +1,5 @@
 #org.brutusin:jsonsrv [![Build Status](https://api.travis-ci.org/brutusin/jsonsrv.svg?branch=master)](https://travis-ci.org/brutusin/jsonsrv)
-A lightweight, jar-packaged, self-describing, JSON RPC service framework for JEE (servlet-based) for easily exposing business methods through a JSON over HTTP API. 
+A self-describing, java web framework for easily exposing business methods as JSON RPC services over HTTP. 
 
 Aimed at creating AJAX/JSON web interfaces.
 
@@ -39,8 +39,10 @@ Aimed at creating AJAX/JSON web interfaces.
 ##Features
 * **Self-describing**. Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. Automatic form generation and validation is straightforward using components like https://github.com/exavolt/onde
 * **Automatic conditional caching**. Just tell what is cacheable.
-* **Easy implementation**. Just code your business.
+* **Implicit HTTP semantics**. Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
+* **Easy implementation**. Just code your business as plain `O execute(I input)` methods . No annotations needed. No serialization concerns.
 * **Plugable rendering**. [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
+* **Optional Spring integration**. 
 
 ##Usage
 ###Maven dependency 
@@ -212,7 +214,7 @@ Service input schema | `srv?id=example&schema=i` | `{"type":"string"}`
 Service output schema | `srv?id=example&schema=o` | `{"type":"object","properties":{"error":{"type":"object","properties":{"code":{"type":"integer","required":true},"data":{"type":"any"},"meaning":{"type":"string","required":true},"message":{"type":"string","required":true}}},"value":{"type":"string"}}}`
 
 ## Action life-cycle
-On servlet initialization, the service mappings (id-action class)  are loaded and an eager instantiation of the actions is performed and bound to the service id.
+On servlet initialization, the service mappings (id-action class)  are loaded, and an instance of the action is created and bound to the service id.
 
 Then this action instance is ready to serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
 
