@@ -130,10 +130,6 @@ Example:
     "className": "org.brutusin.jsonsrv.example.complex.HelloWorldAction"
   },
   {
-    "id": "exception",
-    "className": "org.brutusin.jsonsrv.example.ExceptionAction"
-  },
-  {
     "id": "date",
     "className": "org.brutusin.jsonsrv.example.GetDateAction"
   }
