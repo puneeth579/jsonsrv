@@ -3,8 +3,8 @@ A self-describing, java web framework for easily exposing business methods as JS
 
 Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of this library is to allow a very simple and efficiently implementation of java services, and being able to execute them by HTTP POST and GET requests, and equally important, constitute a self-describing repository of services.
 
-Here some examples:   
-
+Here some examples:
+ 
 * Service execution:
   * Request: `http://localhost:8080/jsonsrv?id=date`
   * Response: `{"value":"2015-01-28T16:04:25.906+01:00"}`
@@ -15,16 +15,17 @@ Here some examples:
   * Request: `http://localhost:8080/jsonsrv?id=date&schema=o`
   * Response `{"type":"string"}`
 
-**Main features:**
+**Main features**
 * **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
 * **Implicit HTTP semantics**: Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
 * **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed. No serialization concerns.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
 * **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services.
 
+
 **Table of Contents**
 
-- [org.brutusin:jsonsrv](#orgbrutusinjsonsrv)
+- [org.brutusin:jsonsrv](#orgbrutusinjsonsrv-)
   - [Definitions](#definitions)
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
