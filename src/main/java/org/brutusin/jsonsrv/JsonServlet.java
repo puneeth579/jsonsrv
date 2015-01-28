@@ -68,7 +68,7 @@ public class JsonServlet extends HttpServlet {
 
     private String stringArraySchema;
     private JsonHelper jsonHelper;
-    private Map<String, JsonAction> actions;
+    private Map<String, JsonService> services = new HashMap();
     private Renderer renderer;
     private boolean schemaParameterDisabled;
 
@@ -96,10 +96,13 @@ public class JsonServlet extends HttpServlet {
             renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
             this.jsonHelper = new JsonHelper(getObjectMapper());
             stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
-            actions = loadActions();
+
+            Map<String, JsonAction> actions = loadActions();
             for (Map.Entry<String, JsonAction> entry : actions.entrySet()) {
+                String id = entry.getKey();
                 JsonAction action = entry.getValue();
-                action.init(jsonHelper);
+                JsonService service = new JsonService(id, action, jsonHelper);
+                services.put(id, service);
             }
         } catch (Exception ex) {
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -195,23 +198,23 @@ public class JsonServlet extends HttpServlet {
                 }
                 cache = true;
             } else {
-                JsonAction action = actions.get(id);
-                if (action == null) {
+                JsonService service = services.get(id);
+                if (service == null) {
                     jsonResponse = new JsonResponse();
                     jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.serviceNotFound));
                     json = this.jsonHelper.getDataHelper().transform(jsonResponse);
                 } else {
                     if (schemaMode == SchemaMode.I) {
-                        json = action.getInputSchema();
+                        json = service.getInputSchema();
                         cache = true;
                     } else if (schemaMode == SchemaMode.O) {
-                        json = action.getOutputSchema();
+                        json = service.getOutputSchema();
                         cache = true;
                     } else {
                         String inputStr = req.getParameter(PARAM_INPUT);
-                        jsonResponse = execute(action, inputStr);
+                        jsonResponse = execute(service, inputStr);
                         if (jsonResponse.getError() == null) {
-                            cache = action.isCacheable();
+                            cache = service.getAction().isCacheable();
                         }
                         json = this.jsonHelper.getDataHelper().transform(jsonResponse);
                     }
@@ -300,24 +303,25 @@ public class JsonServlet extends HttpServlet {
 
     private JsonResponse listServices() {
         JsonResponse json = new JsonResponse();
-        json.setValue(actions.keySet());
+        json.setValue(services.keySet());
         return json;
     }
 
-    private JsonResponse execute(JsonAction action, String inputStr) {
+    private JsonResponse execute(JsonService service, String inputStr) {
         JsonResponse json = new JsonResponse();
-        if (action == null) {
+        if (service == null) {
             json.setError(json.new ErrorDescription(JsonResponse.Error.serviceNotFound));
             return json;
         }
+        JsonAction action = service.getAction();
         Object input;
 
         if (inputStr == null) {
             input = null;
         } else {
             try {
-                this.jsonHelper.getSchemaHelper().validate(action.getValidationInputSchema(), this.jsonHelper.parse(inputStr));
-                input = this.jsonHelper.getDataHelper().transform(inputStr, action.getInputClass());
+                this.jsonHelper.getSchemaHelper().validate(service.getValidationInputSchema(), this.jsonHelper.parse(inputStr));
+                input = this.jsonHelper.getDataHelper().transform(inputStr, service.getInputClass());
             } catch (ProcessingException ex) {
                 json.setError(json.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
                 return json;
