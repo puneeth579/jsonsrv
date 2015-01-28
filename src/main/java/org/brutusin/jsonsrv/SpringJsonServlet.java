@@ -16,8 +16,6 @@
 
 import java.util.List;
 import java.util.Map;
-import org.brutusin.jsonsrv.JsonAction;
-import org.brutusin.jsonsrv.JsonServlet;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -28,6 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class SpringJsonServlet extends JsonServlet {
 
     public static final String INIT_PARAM_SPRING_CFG_FILE = "spring-cfg";
+    private static final String DEFAULT_CFG_FILE = "classpath*:/jsonsrv.xml";
 
     @Override
     protected List<String> getSupportedInitParams() {
@@ -41,9 +40,9 @@ public class SpringJsonServlet extends JsonServlet {
         String springConfigFile = getServletConfig().getInitParameter(INIT_PARAM_SPRING_CFG_FILE);
         ApplicationContext applicationContext;
         if (springConfigFile == null) {
-            applicationContext = new ClassPathXmlApplicationContext("/jsonsrv.xml");
+            applicationContext = new ClassPathXmlApplicationContext(DEFAULT_CFG_FILE);
         } else {
-            applicationContext = new ClassPathXmlApplicationContext(springConfigFile, "/jsonsrv.xml");
+            applicationContext = new ClassPathXmlApplicationContext(springConfigFile, DEFAULT_CFG_FILE);
         }
         return applicationContext.getBeansOfType(JsonAction.class);
     }
