@@ -202,7 +202,7 @@ Run the web application and test it form the web browser. Both POST and GET meth
 
 URL parameter  | Description
 ------------- | -------------
-**`id`** | Id of the service to execute, as registered in the `jsonsrv.json` file
+**`id`** | Id of the service to execute, as registered in the configuration file
 **`input`** | json representation of the input
 **`schema`** | Set it to `i` or `o` to return the schema of the input or output of the service respectively
 
