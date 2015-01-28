@@ -10,6 +10,8 @@ Aimed at creating AJAX/JSON web interfaces.
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
     - [Framework servlets](#framework-servlets)
+      -[JsonServlet](#jsonservlet)
+      -[SpringJsonServlet](#springjsonservlet)
     - [Web module configuration](#web-module-configuration)
     - [Service implementation](#service-implementation)
     - [Service registration](#service-registration)
@@ -97,13 +99,11 @@ public class GetDateAction extends JsonAction<Void, String> {
 ###Framework servlets
 Two framework servlets are available, covering two different configuration scenarios: 
 * [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java): Base servlet loading service definitions from `jsonsrv.json` (explained later)
-* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java) Extending the previous servlet, this servlet loads the service definitions from [Spring configuration XML files](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html). Spring dependencies have a `<scope>provided</scope>` in this module, so order to use this servlet, the spring jars must be available to client module
+* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java): Extending the previous servlet, this servlet loads the service definitions from Spring configuration XML files ([?](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html)). Spring dependencies have a `<scope>provided</scope>` in this module, so order to use this servlet, the spring jars must be available to client module
 
 ####JsonServlet
 #####Web module configuration
 In the `web.xml` configure the following mapping for this framework servlet:
-
-Example:
 
 ```xml
 ...
@@ -144,14 +144,11 @@ Example:
   }
 ]
 ```
-Notice that the same action class can be used by different services, and an optional `initParam` can be passed to the actions. 
-
 This way, all requests under the `/srv` path will be processed by it.
 
 ####SpringJsonServlet
 In the `web.xml` configure the following mapping for this framework servlet:
 
-Example:
 ```xml
 ...
     <servlet>
@@ -185,6 +182,10 @@ Example:
 
 </beans>
 ```
+The framework automatically finds all beans the spring context instance of `JsonAction`, using their `id` as id for the service.
+
+Notice that the same action class can be used by different services, an dependency injection can be used. 
+
 
 ###Running
 
