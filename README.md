@@ -1,34 +1,22 @@
 #org.brutusin:jsonsrv [![Build Status](https://api.travis-ci.org/brutusin/jsonsrv.svg?branch=master)](https://travis-ci.org/brutusin/jsonsrv)
 A self-describing, java web framework for easily exposing business methods as JSON RPC services over HTTP. 
 
-Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of this library is to allow a very **simple and efficiently implementation** of java services, and being able to **execute** them by HTTP POST and GET requests, for example:   
+Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of this library is to allow a very simple and efficiently implementation of java services, and being able to **execute** them by HTTP POST and GET requests, for example:   
 
-Request (service execution)
-```url
-http://localhost:8080/jsonsrv?id=date
-```
-Response
-```json
-{"value":"2015-01-28T16:04:25.906+01:00"}
-```
-and equally important, constitute a **self-describing repository**  of services:
+Service execution:
+* Request: `http://localhost:8080/jsonsrv?id=date`
+* Response: `{"value":"2015-01-28T16:04:25.906+01:00"}`
 
-Request (service listing)
-```url
-http://localhost:8080/jsonsrv
-```
-Response
-```json
-{"value":["exception","date","hello","version"]}
-```
-Request (service input JSON-schema)
-```url
-http://localhost:8080/jsonsrv?id=hello&schema=i
-```
-Response
-```json
-{"type":"object","id":"urn:jsonschema:org:brutusin:jsonsrv:example:complex:Person","properties":{"name":{"type":"string"},"age":{"type":"integer"}}}
-```
+and equally important, constitute a self-describing repository  of services:
+
+Service listing:
+* Request: `http://localhost:8080/jsonsrv`
+* Response `{"value":["exception","date","hello","version"]}`
+
+Service input JSON-schema:
+* Request: `http://localhost:8080/jsonsrv?id=hello&schema=i`
+* Response `{"type":"object","id":"urn:jsonschema:org:brutusin:jsonsrv:example:complex:Person","properties":{"name":{"type":"string"},"age":{"type":"integer"}}}`
+
 **Main features:**
 * **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
 * **Implicit HTTP semantics**: Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
