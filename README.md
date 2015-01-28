@@ -3,10 +3,16 @@ A self-describing, java web framework for easily exposing business methods as JS
 
 Aimed at creating AJAX/JSON web interfaces.
 
+##Main features
+* **Self-describing**. Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. Automatic form generation and validation is straightforward using components like https://github.com/exavolt/onde
+* **Implicit HTTP semantics**. Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
+* **Easy implementation**. Just code your business as plain `O execute(I input)` methods . No annotations needed. No serialization concerns.
+* **Plugable rendering**. [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
+* **Optional Spring integration**. Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) and implement loosely-coupled maintainable services 
+
 **Table of Contents**
 
 - [org.brutusin:jsonsrv](#orgbrutusinjsonsrv)
-  - [Features](#features)
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
     - [Framework servlets](#framework-servlets)
@@ -35,14 +41,6 @@ Aimed at creating AJAX/JSON web interfaces.
   - [TODO](#todo)
   - [Authors](#authors)
   - [License](#license)
-
-##Features
-* **Self-describing**. Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. Automatic form generation and validation is straightforward using components like https://github.com/exavolt/onde
-* **Automatic conditional caching**. Just tell what is cacheable.
-* **Implicit HTTP semantics**. Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
-* **Easy implementation**. Just code your business as plain `O execute(I input)` methods . No annotations needed. No serialization concerns.
-* **Plugable rendering**. [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
-* **Optional Spring integration**. 
 
 ##Usage
 ###Maven dependency 
