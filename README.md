@@ -42,7 +42,6 @@ Aimed at creating AJAX/JSON web interfaces.
   - [Main stack](#main-stack)
   - [Brutusin dependent modules](#brutusin-dependent-modules)
   - [Support, bugs and requests](#support-bugs-and-requests)
-  - [TODO](#todo)
   - [Authors](#authors)
   - [License](#license)
 
