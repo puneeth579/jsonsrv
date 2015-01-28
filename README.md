@@ -327,6 +327,7 @@ The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java
 * `protected SchemaFactoryWrapper getSchemaFactory()`: To use a custom [SchemaFactoryWrapper](https://github.com/FasterXML/jackson-module-jsonSchema/blob/master/src/main/java/com/fasterxml/jackson/module/jsonSchema/factories/SchemaFactoryWrapper.java) in the java-class to schema binding.
 * `protected Map<String, JsonAction> loadActions()`: To change the source actions are loaded from.
 * `protected List<String> getSupportedInitParams()`: If subclasses add new `init-param` parameters they have to be declared to be used. 
+
 ##Example:
 A complete example project is available at [jsonsrv-example](https://github.com/brutusin/jsonsrv-example).  
 
