@@ -9,6 +9,7 @@ Aimed at creating AJAX/JSON web interfaces.
   - [Features](#features)
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
+    - [Framework servlets](#framework-servlets)
     - [Web module configuration](#web-module-configuration)
     - [Service implementation](#service-implementation)
     - [Service registration](#service-registration)
@@ -25,8 +26,8 @@ Aimed at creating AJAX/JSON web interfaces.
       - [Caching](#caching)
   - [Configuration and extensions](#configuration-and-extensions)
     - [Custom renderers](#custom-renderers)
-    - [JsonServlet init params](#jsonservlet-init-params)
-    - [JsonServlet overridable methods](#jsonservlet-overridable-methods)
+    - [Servlets init params](#servlets-init-params)
+    - [Servlets overridable methods](#servlets-overridable-methods)
   - [Example](#example)
   - [Main stack](#main-stack)
   - [Brutusin dependent modules](#brutusin-dependent-modules)
@@ -53,22 +54,6 @@ This library is meant to be used by a java web module. If you are using maven, a
 Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%20a%3A%22jsonsrv%22) to see the latest available version released to the Maven Central Repository.
 
 If you are not using maven and need help you can ask [here](https://github.com/brutusin/jsonsrv/issues).
-
-###Web module configuration
-In the `web.xml` configure the following mapping for the framework servlet, [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java):
-```xml
-...
-    <servlet>
-        <servlet-name>json-servlet</servlet-name>
-        <servlet-class>org.brutusin.jsonsrv.JsonServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>json-servlet</servlet-name>
-        <url-pattern>/srv</url-pattern>
-    </servlet-mapping>
-...
-```
-This way, all requests under the `/srv` path will be processed by it.
 
 ###Service implementation
 Just extend from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), and ensure to define your input/output parameters as POJOs.
@@ -109,7 +94,31 @@ public class GetDateAction extends JsonAction<Void, String> {
 }
 ```
 
-###Service registration
+###Framework servlets
+Two framework servlets are available, covering two different configuration scenarios: 
+* [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java): Base servlet loading service definitions from `jsonsrv.json` (explained later)
+* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java) Extending the previous servlet, this servlet loads the service definitions from [Spring configuration XML files](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html). Spring dependencies have a `<scope>provided</scope>` in this module, so order to use this servlet, the spring jars must be available to client module
+
+####JsonServlet
+#####Web module configuration
+In the `web.xml` configure the following mapping for this framework servlet:
+
+Example:
+
+```xml
+...
+    <servlet>
+        <servlet-name>json-servlet</servlet-name>
+        <servlet-class>org.brutusin.jsonsrv.JsonServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>json-servlet</servlet-name>
+        <url-pattern>/srv</url-pattern>
+    </servlet-mapping>
+...
+```
+
+#####Service registration
 Register the actions in order to the framework can find them, by creating a `jsonsrv.json` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.json")`).
 
 Example:
@@ -137,6 +146,45 @@ Example:
 ```
 Notice that the same action class can be used by different services, and an optional `initParam` can be passed to the actions. 
 
+This way, all requests under the `/srv` path will be processed by it.
+
+####SpringJsonServlet
+In the `web.xml` configure the following mapping for this framework servlet:
+
+Example:
+```xml
+...
+    <servlet>
+        <servlet-name>json-servlet</servlet-name>
+        <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>json-servlet</servlet-name>
+        <url-pattern>/srv</url-pattern>
+    </servlet-mapping>
+...
+```
+
+#####Service registration
+Register the actions in order to the framework can find them, by creating a `jsonsrv.xml` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.xml")`).
+
+Example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   					   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="date" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
+        <property name="datePattern" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX"/>
+    </bean>
+    <bean id="time" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
+        <property name="datePattern" value="h:mm a"/>
+    </bean>
+
+</beans>
+```
 
 ###Running
 
@@ -267,13 +315,16 @@ More advanced functionality can be plugged using custom renderers; for example, 
 
 In the next sections, it is explained how to configure a custom render. 
 
-### JsonServlet init-params
-The following optional init-params are supported by [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java):
+### Servlets init-params
+The following optional init-params are supported by both [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java), [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java):
 * `schema-parameter-disabled`: Accepts a boolean value for disabling schema queries. Default value is `false` (enabled)
 * `renderer`: Class name to the custom render to use. If not specified, the default renderer is used 
 * `render-param`: Additional parameter to be passed to the custom renderer, accessible via its `getInitParam()` method
 
-### JsonServlet overridable methods
+Additionaly, only for [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java):
+* `spring-cfg`: Path to an additional (all `jsonsrv.xml` in classpath are always used) spring configuration file to use,
+
+### Servlets overridable methods
 The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overriden:
 * `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the pluggable resources (configuration file, action classes and render class). If not overridden, `JsonServlet.class.getClassLoader()` is returned.
 * `protected ObjectMapper getObjectMapper()`: To use a custom [ObjectMapper](http://fasterxml.github.io/jackson-databind/javadoc/2.3.0/com/fasterxml/jackson/databind/ObjectMapper.html) in the JSON to Java binding.
@@ -293,9 +344,6 @@ This module could not be possible without:
 
 ## Support, bugs and requests
 https://github.com/brutusin/jsonsrv/issues
-
-## TODO
-Pending documentation of Spring usage (SpringJsonServlet)
 
 ## Authors
 
