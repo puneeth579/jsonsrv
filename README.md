@@ -340,6 +340,7 @@ This module could not be possible without:
 * [FasterXML/jackson stack](https://github.com/FasterXML/jackson) The underlying JSON stack.
 * [com.fasterxml.jackson.module:jackson-module-jsonSchema](https://github.com/FasterXML/jackson-module-jsonSchema) for java class to JSON schema mapping 
 * [com.github.fge:json-schema-validator](https://github.com/fge/json-schema-validator) for validation against a JSON schema
+* [Spring IoC](http://projects.spring.io/spring-framework/) Used optionally to load service mappings from Spring
 
 ## Brutusin dependent modules
 * [org.brutusin:jsonsrv-human-renderer](https://github.com/brutusin/jsonsrv-human-renderer)
