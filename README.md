@@ -4,11 +4,11 @@ A self-describing, java web framework for easily exposing business methods as JS
 Aimed at creating AJAX/JSON web interfaces.
 
 **Main features:**
-* **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability 
+* **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
 * **Implicit HTTP semantics**: Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
 * **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed. No serialization concerns.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
-* **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services 
+* **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services.
 
 
 **Table of Contents**
@@ -324,7 +324,9 @@ Additionaly, only for [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/Spr
 The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overriden:
 * `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the pluggable resources (configuration file, action classes and render class). If not overridden, `JsonServlet.class.getClassLoader()` is returned.
 * `protected ObjectMapper getObjectMapper()`: To use a custom [ObjectMapper](http://fasterxml.github.io/jackson-databind/javadoc/2.3.0/com/fasterxml/jackson/databind/ObjectMapper.html) in the JSON to Java binding.
-
+* `protected SchemaFactoryWrapper getSchemaFactory()`: To use a custom [SchemaFactoryWrapper](https://github.com/FasterXML/jackson-module-jsonSchema/blob/master/src/main/java/com/fasterxml/jackson/module/jsonSchema/factories/SchemaFactoryWrapper.java) in the java-class to schema binding.
+* `protected Map<String, JsonAction> loadActions()`: To change the source actions are loaded from.
+* `protected List<String> getSupportedInitParams()`: If subclasses add new `init-param` parameters they have to be declared to be used. 
 ##Example:
 A complete example project is available at [jsonsrv-example](https://github.com/brutusin/jsonsrv-example).  
 
