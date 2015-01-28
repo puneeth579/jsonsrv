@@ -105,7 +105,7 @@ public class GetDateAction extends JsonAction<Void, String> {
 ###Framework servlets
 Two framework servlets are available, covering two different configuration scenarios: 
 * [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java): Base servlet loading service definitions from `jsonsrv.json` (explained later)
-* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java): Extending the previous servlet, this servlet loads the service definitions from [Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html) configuration XML files (by default `jsonsrv.xml`). Spring dependencies have a `<scope>provided</scope>` in this module, so order to use this servlet, the spring jars must be available to client module. 
+* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java): Extending the previous servlet, this servlet loads the service definitions from [Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html) configuration XML files (by default `jsonsrv.xml`). Spring dependencies have a `<scope>provided</scope>` in this module, so in order to use this servlet, [org.springframework:spring-context](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.springframework%22%20a%3A%22spring-context%22) artifacts must be provided by the client module at runtime. 
 
 ####JsonServlet
 #####Web module configuration
