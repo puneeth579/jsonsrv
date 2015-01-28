@@ -9,15 +9,15 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
   * Response: `{"value":"2015-01-28T16:04:25.906+01:00"}`
 * Service listing:
   * Request: `http://localhost:8080/jsonsrv`
-  * Response `{"value":["exception","date","hello","version"]}`
+  * Response: `{"value":["exception","date","hello","version"]}`
 * Service output JSON-schema:
   * Request: `http://localhost:8080/jsonsrv?id=date&schema=o`
-  * Response `{"type":"string"}`
+  * Response: `{"type":"string"}`
 
 **Main features**
 * **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
-* **Implicit HTTP semantics**: Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
-* **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed. No serialization concerns.
+* **Implicit HTTP semantics**: Caching and status codes are handled automatically. Service code is only related to the business. Neither HTTP nor serialization related coding.
+* **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
 * **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services.
 
