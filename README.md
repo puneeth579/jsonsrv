@@ -205,9 +205,9 @@ Service input schema | `srv?id=example&schema=i` | `{"type":"string"}`
 Service output schema | `srv?id=example&schema=o` | `{"type":"object","properties":{"error":{"type":"object","properties":{"code":{"type":"integer","required":true},"data":{"type":"any"},"meaning":{"type":"string","required":true},"message":{"type":"string","required":true}}},"value":{"type":"string"}}}`
 
 ## Action life-cycle
-On servlet initialization, the service mappings (id-action class)  are loaded, and an instance of the action is created and bound to the service id.
+On servlet initialization, the service mappings are loaded from the configuration file(s), and for each mapping, an instance of the action is created and bound to the service id.
 
-Then this action instance is ready to serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
+This action will serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
 
 ## Implementation details
 ###Serialization
