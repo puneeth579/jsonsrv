@@ -3,8 +3,7 @@ A self-describing, java web framework for easily exposing business methods as JS
 
 Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of this library is to allow a very simple and efficiently implementation of java services, and being able to execute them by HTTP POST and GET requests, and equally important, constitute a self-describing repository of services.
 
-Here some examples:
- 
+**Examples** 
 * Service execution:
   * Request: `http://localhost:8080/jsonsrv?id=date`
   * Response: `{"value":"2015-01-28T16:04:25.906+01:00"}`
