@@ -1,15 +1,39 @@
 #org.brutusin:jsonsrv [![Build Status](https://api.travis-ci.org/brutusin/jsonsrv.svg?branch=master)](https://travis-ci.org/brutusin/jsonsrv)
 A self-describing, java web framework for easily exposing business methods as JSON RPC services over HTTP. 
 
-Aimed at creating AJAX/JSON web interfaces.
+Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of this library allow to implement java services in a very simple and efficiently way and being able to execute them by HTTP POST and GET requests, for example:   
 
+Request (service execution)
+```url
+http://localhost:8080/jsonsrv?id=date
+```
+Response
+```json
+{"value":"2015-01-28T16:04:25.906+01:00"}
+```
+and equally important, constitute a self-describing repository of services:
+Request (service listing)
+```url
+http://localhost:8080/jsonsrv
+```
+Response
+```json
+{"value":["exception","date","hello","version"]}
+```
+Request (service input JSON-schema)
+```url
+http://localhost:8080/jsonsrv?id=hello&schema=i
+```
+Response
+```json
+{"type":"object","id":"urn:jsonschema:org:brutusin:jsonsrv:example:complex:Person","properties":{"name":{"type":"string"},"age":{"type":"integer"}}}
+```
 **Main features:**
 * **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
 * **Implicit HTTP semantics**: Caching and status codes are handled automatically. Just code your business and tell what is cacheable.
 * **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed. No serialization concerns.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
 * **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services.
-
 
 **Table of Contents**
 
