@@ -10,6 +10,7 @@ Aimed at creating AJAX/JSON web interfaces.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
 * **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services 
 
+
 **Table of Contents**
 
 - [org.brutusin:jsonsrv](#orgbrutusinjsonsrv)
@@ -17,6 +18,8 @@ Aimed at creating AJAX/JSON web interfaces.
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
     - [Framework servlets](#framework-servlets)
+      - [JsonServlet](#jsonservlet)
+      - [SpringJsonServlet](#springjsonservlet)
     - [Web module configuration](#web-module-configuration)
     - [Service implementation](#service-implementation)
     - [Service registration](#service-registration)
