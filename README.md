@@ -140,13 +140,7 @@ Example:
   },
   {
     "id": "date",
-    "className": "org.brutusin.jsonsrv.example.GetDateAction",
-    "initParam": "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-  },
-  {
-    "id": "time",
-    "className": "org.brutusin.jsonsrv.example.GetDateAction",
-    "initParam": "h:mm a"
+    "className": "org.brutusin.jsonsrv.example.GetDateAction"
   }
 ]
 ```
