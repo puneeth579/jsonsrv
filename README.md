@@ -108,14 +108,14 @@ In the `web.xml` configure the following mapping for this framework servlet:
 
 ```xml
 ...
-    <servlet>
-        <servlet-name>json-servlet</servlet-name>
-        <servlet-class>org.brutusin.jsonsrv.JsonServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>json-servlet</servlet-name>
-        <url-pattern>/srv</url-pattern>
-    </servlet-mapping>
+<servlet>
+    <servlet-name>json-servlet</servlet-name>
+    <servlet-class>org.brutusin.jsonsrv.JsonServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>json-servlet</servlet-name>
+    <url-pattern>/srv</url-pattern>
+</servlet-mapping>
 ...
 ```
 
@@ -147,19 +147,19 @@ In the `web.xml` configure the following mapping for this framework servlet:
 
 ```xml
 ...
-    <servlet>
-        <servlet-name>json-servlet</servlet-name>
-        <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
-        <init-param>
-            <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
-            <param-name>spring-cfg</param-name>
-            <param-value>/application-context.xml</param-value>    
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>json-servlet</servlet-name>
-        <url-pattern>/srv</url-pattern>
-    </servlet-mapping>
+<servlet>
+    <servlet-name>json-servlet</servlet-name>
+    <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
+    <init-param>
+        <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
+        <param-name>spring-cfg</param-name>
+        <param-value>/application-context.xml</param-value>    
+    </init-param>
+</servlet>
+<servlet-mapping>
+    <servlet-name>json-servlet</servlet-name>
+    <url-pattern>/srv</url-pattern>
+</servlet-mapping>
 ...
 ```
 
