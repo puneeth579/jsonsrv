@@ -1,6 +1,6 @@
 #org.brutusin:jsonsrv changelog
 
-##2.0.0 (not yet released)
+##2.0.0 (2015/01/28)
 * Added Spring support
 * Changed JsonAction API
 
