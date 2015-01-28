@@ -19,6 +19,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.jsonSchema.customProperties.HyperSchemaFactoryWrapper;
+import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
 import com.github.fge.jsonschema.core.report.ProcessingReport;
@@ -94,7 +96,7 @@ public class JsonServlet extends HttpServlet {
                 renderer = new DefaultRenderer();
             }
             renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
-            this.jsonHelper = new JsonHelper(getObjectMapper());
+            this.jsonHelper = new JsonHelper(getObjectMapper(), getSchemaFactory());
             stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
 
             Map<String, JsonAction> actions = loadActions();
@@ -108,45 +110,6 @@ public class JsonServlet extends HttpServlet {
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServletException(ex);
         }
-    }
-
-    @Override
-    protected final void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doDelete(req, resp);
-    }
-
-    @Override
-    protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
-    }
-
-    @Override
-    protected final void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doHead(req, resp);
-    }
-
-    @Override
-    protected final void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doOptions(req, resp);
-    }
-
-    @Override
-    protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-    }
-
-    @Override
-    protected final void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPut(req, resp);
-    }
-
-    @Override
-    protected final void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doTrace(req, resp);
-    }
-
-    protected List<String> getSupportedInitParams() {
-        return SUPPORTED_PARAMS;
     }
 
     /**
@@ -267,28 +230,8 @@ public class JsonServlet extends HttpServlet {
         }
     }
 
-    private static void addContentLocation(HttpServletRequest req, HttpServletResponse resp) {
-        StringBuffer requestURL = req.getRequestURL();
-        Map<String, String[]> parameterMap = req.getParameterMap();
-        boolean first = true;
-        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            String name = entry.getKey();
-            String[] value = entry.getValue();
-            for (int i = 0; i < value.length; i++) {
-                if (first) {
-                    first = false;
-                    requestURL.append("?");
-                } else {
-                    requestURL.append("&");
-                }
-                try {
-                    requestURL.append(name).append("=").append(URLEncoder.encode(value[i], resp.getCharacterEncoding()));
-                } catch (UnsupportedEncodingException ex) {
-                    throw new AssertionError();
-                }
-            }
-        }
-        resp.addHeader("Content-Location", resp.encodeRedirectURL(requestURL.toString()));
+    protected List<String> getSupportedInitParams() {
+        return SUPPORTED_PARAMS;
     }
 
     protected ClassLoader getClassLoader() {
@@ -299,6 +242,36 @@ public class JsonServlet extends HttpServlet {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
+    }
+    
+    protected SchemaFactoryWrapper getSchemaFactory(){
+        return new SchemaFactoryWrapper();
+    }
+
+    protected Map<String, JsonAction> loadActions() throws Exception {
+        Map<String, JsonAction> ret = new HashMap();
+        Enumeration<URL> urls = getClassLoader().getResources("jsonsrv.json");
+        while (urls.hasMoreElements()) {
+            URL url = urls.nextElement();
+            String fileContents = IOUtils.toString(url.openStream(), "UTF-8");
+            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class);
+            if (ams
+                    != null) {
+                for (int i = 0; i < ams.length; i++) {
+                    ActionMapping am = ams[i];
+                    if (ret.containsKey(am.getId())) {
+                        throw new Error("Duplicated mapping found with id " + am.getId());
+                    }
+                    Class clazz = getClassLoader().loadClass(am.getClassName());
+                    if (!JsonAction.class.isAssignableFrom(clazz)) {
+                        throw new Error("Invalid action class found: " + am.getClassName());
+                    }
+                    JsonAction instance = (JsonAction) clazz.newInstance();
+                    ret.put(am.getId(), instance);
+                }
+            }
+        }
+        return ret;
     }
 
     private JsonResponse listServices() {
@@ -363,29 +336,27 @@ public class JsonServlet extends HttpServlet {
         return json;
     }
 
-    protected Map<String, JsonAction> loadActions() throws Exception {
-        Map<String, JsonAction> ret = new HashMap();
-        Enumeration<URL> urls = getClassLoader().getResources("jsonsrv.json");
-        while (urls.hasMoreElements()) {
-            URL url = urls.nextElement();
-            String fileContents = IOUtils.toString(url.openStream(), "UTF-8");
-            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class);
-            if (ams
-                    != null) {
-                for (int i = 0; i < ams.length; i++) {
-                    ActionMapping am = ams[i];
-                    if (ret.containsKey(am.getId())) {
-                        throw new Error("Duplicated mapping found with id " + am.getId());
-                    }
-                    Class clazz = getClassLoader().loadClass(am.getClassName());
-                    if (!JsonAction.class.isAssignableFrom(clazz)) {
-                        throw new Error("Invalid action class found: " + am.getClassName());
-                    }
-                    JsonAction instance = (JsonAction) clazz.newInstance();
-                    ret.put(am.getId(), instance);
+    private static void addContentLocation(HttpServletRequest req, HttpServletResponse resp) {
+        StringBuffer requestURL = req.getRequestURL();
+        Map<String, String[]> parameterMap = req.getParameterMap();
+        boolean first = true;
+        for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+            String name = entry.getKey();
+            String[] value = entry.getValue();
+            for (int i = 0; i < value.length; i++) {
+                if (first) {
+                    first = false;
+                    requestURL.append("?");
+                } else {
+                    requestURL.append("&");
+                }
+                try {
+                    requestURL.append(name).append("=").append(URLEncoder.encode(value[i], resp.getCharacterEncoding()));
+                } catch (UnsupportedEncodingException ex) {
+                    throw new AssertionError();
                 }
             }
         }
-        return ret;
+        resp.addHeader("Content-Location", resp.encodeRedirectURL(requestURL.toString()));
     }
 }
