@@ -178,7 +178,7 @@ Example:
     </bean>
 </beans>
 ```
-The framework automatically finds all beans the spring context instance of `JsonAction`, using their `id` as id for the service.
+The framework will automatically find all beans of the spring context that are instances of `JsonAction`, and will use their `id` property as id for the service.
 
 Notice that the same action class can be used by different services, an dependency injection can be used. 
 
