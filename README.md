@@ -84,20 +84,15 @@ public class HelloWorldAction extends JsonAction<String, String> {
 ```java
 public class GetDateAction extends JsonAction<Void, String> {
 
-    private SimpleDateFormat dateFormat;
-
-    @Override
-    protected void doInit(String initParam) throws Exception {
-        if (initParam != null) {
-            dateFormat = new SimpleDateFormat(initParam);
-        } else {
-            dateFormat = new SimpleDateFormat();
-        }
-    }
+    private SimpleDateFormat dateFormat = new SimpleDateFormat();
 
     @Override
     public String execute(Void input) throws Exception {
         return dateFormat.format(new Date());
+    }
+
+    public void setDatePattern(String pattern) {
+        dateFormat = new SimpleDateFormat(pattern);
     }
 }
 ```
@@ -185,7 +180,6 @@ Example:
     <bean id="time" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
         <property name="datePattern" value="h:mm a"/>
     </bean>
-
 </beans>
 ```
 The framework automatically finds all beans the spring context instance of `JsonAction`, using their `id` as id for the service.
