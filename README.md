@@ -13,6 +13,7 @@ Aimed at creating AJAX/JSON web interfaces.
 **Table of Contents**
 
 - [org.brutusin:jsonsrv](#orgbrutusinjsonsrv)
+  - [Definitions](#definitions)
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
     - [Framework servlets](#framework-servlets)
@@ -41,6 +42,11 @@ Aimed at creating AJAX/JSON web interfaces.
   - [TODO](#todo)
   - [Authors](#authors)
   - [License](#license)
+
+##Definitions
+The following concepts are used throughout the rest of the documentation, and must be defined:
+* **Action**: An action is an instance of [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java). Is the java object defining the business method.
+* **Service**: A service is an exposed action (published by the framework), bound (also "mapped") to a unique identifier `id`;
 
 ##Usage
 ###Maven dependency 
