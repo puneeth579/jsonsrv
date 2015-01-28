@@ -10,8 +10,6 @@ Aimed at creating AJAX/JSON web interfaces.
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
     - [Framework servlets](#framework-servlets)
-      -[JsonServlet](#jsonservlet)
-      -[SpringJsonServlet](#springjsonservlet)
     - [Web module configuration](#web-module-configuration)
     - [Service implementation](#service-implementation)
     - [Service registration](#service-registration)
@@ -154,8 +152,8 @@ In the `web.xml` configure the following mapping for this framework servlet:
     <servlet>
         <servlet-name>json-servlet</servlet-name>
         <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
-        <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
         <init-param>
+            <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
             <param-name>spring-cfg</param-name>
             <param-value>/application-context.xml</param-value>    
         </init-param>
