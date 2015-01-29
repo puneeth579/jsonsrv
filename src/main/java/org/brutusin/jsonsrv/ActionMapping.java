@@ -23,7 +23,6 @@ public class ActionMapping {
 
     private String id;
     private String className;
-    private String initParam;
 
     public String getId() {
         return id;
@@ -39,13 +38,5 @@ public class ActionMapping {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public String getInitParam() {
-        return initParam;
-    }
-
-    public void setInitParam(String initParam) {
-        this.initParam = initParam;
     }
 }
