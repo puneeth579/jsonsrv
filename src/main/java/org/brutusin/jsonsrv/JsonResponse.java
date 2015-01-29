@@ -53,6 +53,7 @@ public class JsonResponse<E> {
             return description;
         }
     }
+    
     private ErrorDescription error;
     private E value;
 
@@ -70,11 +71,9 @@ public class JsonResponse<E> {
 
     public void setError(ErrorDescription error) {
         this.error = error;
-
     }
 
     public class ErrorDescription {
-
         @JsonProperty(required = true)
         private final int code;
         @JsonProperty(required = true)
