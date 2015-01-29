@@ -12,14 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */package org.brutusin.jsonsrv;
+ */
+package org.brutusin.jsonsrv;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jsonSchema.customProperties.HyperSchemaFactoryWrapper;
 import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
 import com.github.fge.jsonschema.core.exceptions.ProcessingException;
 import com.github.fge.jsonschema.core.report.ProcessingMessage;
@@ -57,20 +57,20 @@ public class JsonServlet extends HttpServlet {
     public static final String INIT_PARAM_RENDERER_PARAM = "render-param";
     public static final String INIT_PARAM_DISABLE_SCHEMA = "schema-parameter-disabled";
 
-    private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM);
-
     public static final String PARAM_ID = "id";
     public static final String PARAM_INPUT = "input";
     public static final String PARAM_SCHEMA = "schema";
 
-    public enum SchemaMode {
+    private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM);
 
+    public enum SchemaMode {
         I, O;
     }
 
+    private final Map<String, JsonService> services = new HashMap();
+    
     private String stringArraySchema;
     private JsonHelper jsonHelper;
-    private Map<String, JsonService> services = new HashMap();
     private Renderer renderer;
     private boolean schemaParameterDisabled;
 
@@ -124,7 +124,7 @@ public class JsonServlet extends HttpServlet {
 
         String reqETag;
         if (req.getMethod().equals("POST")) {
-            // 304 (Not Modified) can no be returned to a POST request. So If-None-Match is ignored, despite of not being present in a HTTP 1.1 compliant POST request
+            // 304 (Not Modified) cannot be returned to a POST request. So If-None-Match is ignored, despite of not being present in a HTTP 1.1 compliant POST request
             reqETag = null;
         } else {
             reqETag = req.getHeader("If-None-Match");
@@ -243,8 +243,8 @@ public class JsonServlet extends HttpServlet {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         return mapper;
     }
-    
-    protected SchemaFactoryWrapper getSchemaFactory(){
+
+    protected SchemaFactoryWrapper getSchemaFactory() {
         return new SchemaFactoryWrapper();
     }
 
