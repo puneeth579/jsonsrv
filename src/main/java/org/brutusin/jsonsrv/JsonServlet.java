@@ -64,11 +64,12 @@ public class JsonServlet extends HttpServlet {
     private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM);
 
     public enum SchemaMode {
+
         I, O;
     }
 
     private final Map<String, JsonService> services = new HashMap();
-    
+
     private String stringArraySchema;
     private JsonHelper jsonHelper;
     private Renderer renderer;
@@ -255,8 +256,7 @@ public class JsonServlet extends HttpServlet {
             URL url = urls.nextElement();
             String fileContents = IOUtils.toString(url.openStream(), "UTF-8");
             ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class);
-            if (ams
-                    != null) {
+            if (ams != null) {
                 for (int i = 0; i < ams.length; i++) {
                     ActionMapping am = ams[i];
                     if (ret.containsKey(am.getId())) {
