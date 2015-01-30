@@ -91,8 +91,12 @@ public class JsonServlet extends HttpServlet {
             }
             String rendererClassName = getServletConfig().getInitParameter(INIT_PARAM_RENDERER);
             if (rendererClassName != null) {
-                Class rendererClass = getClassLoader().loadClass(rendererClassName);
-                renderer = (Renderer) rendererClass.newInstance();
+                try {
+                    Class rendererClass = getClassLoader().loadClass(rendererClassName);
+                    renderer = (Renderer) rendererClass.newInstance();
+                } catch (Exception ex) {
+                    throw new Error("Error loading renderer " + rendererClassName, ex);
+                }
             } else {
                 renderer = new DefaultRenderer();
             }
