@@ -35,5 +35,5 @@ public abstract class Renderer {
         // to be overridden
     }
     
-    public abstract void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode) throws IOException;
+    public abstract void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode, String serviceId) throws IOException;
 }

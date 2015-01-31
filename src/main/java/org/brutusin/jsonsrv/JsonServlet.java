@@ -45,6 +45,7 @@ import org.brutusin.commons.json.JsonHelper;
 import org.brutusin.commons.json.ValidationException;
 import org.brutusin.commons.utils.Miscellaneous;
 import org.brutusin.jsonsrv.impl.DefaultRenderer;
+import org.brutusin.jsonsrv.json.JsonsrvFactoryWrapper;
 import org.brutusin.jsonsrv.plugin.Renderer;
 
 /**
@@ -229,7 +230,7 @@ public class JsonServlet extends HttpServlet {
             if (etag != null) {
                 resp.setHeader("ETag", etag);
             }
-            renderer.service(getServletConfig(), req, resp, json, schemaMode);
+            renderer.service(getServletConfig(), req, resp, json, schemaMode, id);
         } else {
             resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
@@ -250,7 +251,7 @@ public class JsonServlet extends HttpServlet {
     }
 
     protected SchemaFactoryWrapper getSchemaFactory() {
-        return new SchemaFactoryWrapper();
+        return new JsonsrvFactoryWrapper();
     }
 
     protected Map<String, JsonAction> loadActions() throws Exception {

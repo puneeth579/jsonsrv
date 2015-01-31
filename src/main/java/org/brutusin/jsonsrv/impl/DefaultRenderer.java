@@ -29,7 +29,7 @@ import org.brutusin.jsonsrv.plugin.Renderer;
 public class DefaultRenderer extends Renderer{
 
     @Override
-    public void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode) throws IOException {
+    public void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode, String serviceId) throws IOException {
         resp.getWriter().print(json);
     }
 }
