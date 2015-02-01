@@ -41,7 +41,7 @@ public final class JsonService<I, O> {
         this.inputClass = (Class<I>) types[0];
         this.outputClass = (Class<O>) types[1];
         this.inputSchema = jsonHelper.getSchemaHelper().getSchemaString(this.inputClass);
-        this.outputSchema = jsonHelper.getSchemaHelper().getSchemaString(JsonResponse.class).replace("\"value\":{\"type\":\"any\"}", "\"value\":" + jsonHelper.getSchemaHelper().getSchemaString(this.outputClass));
+        this.outputSchema = jsonHelper.getSchemaHelper().getSchemaString(this.outputClass);
         try {
             this.validationInputSchema = jsonHelper.getSchemaHelper().getSchema(jsonHelper.getSchemaHelper().getSchemaString(this.inputClass));
         } catch (Exception ex) {
