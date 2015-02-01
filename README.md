@@ -319,9 +319,9 @@ The [default renderer](src/main/java/org/brutusin/jsonsrv/impl/DefaultRenderer.j
 ```java
 resp.getWriter().print(json); // being resp a HttpServletResponse
 ``` 
-More advanced functionality can be plugged using custom renderers; for example, [jsonsrv-human-renderer](https://github.com/brutusin/jsonsrv-human-renderer) module that adds and extra "human" mode that eases service testing and enhances readability, by the automatic creation of HTML forms from the input schema of the service.
+More advanced functionality can be plugged using custom renderers; for example, [jsonsrv-human-renderer](https://github.com/brutusin/jsonsrv-human-renderer) module that adds and extra "human" mode that eases service testing and improves readability, by the automatic creation of HTML forms from the input schema of the service.
 
-In the next sections, it is explained how to configure a custom render. 
+In the following sections, it is explained how to configure a custom render. 
 
 ### Servlets init-params
 The following optional init-params are supported by both [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java), [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java):
