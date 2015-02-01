@@ -16,6 +16,7 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
 
 **Main features**
 * **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
+* **Complex input/output data**: Given that input schema is known, input data can have an arbitrary complexity.
 * **Implicit HTTP semantics**: Caching and status codes are handled automatically. Service code is only related to the business. Neither HTTP nor serialization related coding.
 * **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
