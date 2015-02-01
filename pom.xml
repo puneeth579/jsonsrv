@@ -11,7 +11,7 @@
     <packaging>jar</packaging>   
     <version>2.0.2-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>A lightweight, jar-packaged, self-describing, JSON RPC service framework for JEE (servlet-based) for easily exposing your business methods through a JSON over HTTP API.</description>
+    <description>A self-describing, java web framework for easily exposing business methods as JSON RPC services over HTTP</description>
     <url>https://github.com/brutusin/jsonsrv</url>
     
     <issueManagement>
