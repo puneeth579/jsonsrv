@@ -1,4 +1,4 @@
-#org.brutusin:jsonsrv [![Build Status](https://api.travis-ci.org/brutusin/jsonsrv.svg?branch=master)](https://travis-ci.org/brutusin/jsonsrv)
+#org.brutusin:jsonsrv [![Build Status](https://api.travis-ci.org/brutusin/jsonsrv.svg?branch=master)](https://travis-ci.org/brutusin/jsonsrv) [![Maven Central Latest Version](https://maven-badges.herokuapp.com/maven-central/org.brutusin/brutusin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.brutusin/brutusin/)
 A self-describing, java web framework for easily exposing business methods as JSON RPC services over HTTP. 
 
 Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of this library is to allow a very simple and efficiently implementation of java services, and being able to execute them by HTTP POST and GET requests, and equally important, constitute a self-describing repository of services.
