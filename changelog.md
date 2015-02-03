@@ -1,5 +1,13 @@
 #org.brutusin:jsonsrv changelog
 
+##2.0.2 (2015/02/01)
+* Json codecs
+* Unregistered bug fixes
+
+##2.0.1 (2015/02/01)
+* Improved documentation
+* Unregistered bug fixes
+
 ##2.0.0 (2015/01/28)
 * Added Spring support
 * Changed JsonAction API
