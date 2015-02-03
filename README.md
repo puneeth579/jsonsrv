@@ -17,7 +17,7 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
 **Main features**
 * **Self-describing**: Based on [JSON Schema](http://json-schema.org/). Input/output schemas of the service can be obtained using the `schema` url-parameter. This feature enables automatic form generation for testing, and enhances service readability, usability and maintainability.
 * **Complex input/output data**: Given that input schema is known, input data can have an arbitrary complexity.
-* **Implicit HTTP semantics**: Caching and status codes are handled automatically. Service code is only related to the business. Neither HTTP nor serialization related coding.
+* **Handles HTTP transparently**: Caching and status codes are handled automatically. Service code is only related to the business. Neither HTTP nor serialization related coding.
 * **Easy implementation**: Business is coded as simple `O execute(I input)` methods . No annotations needed.
 * **Plugable rendering**: [Custom renderers](#custom-renderers) can be developed in order to provide more advanced visualizations. 
 * **Optional Spring integration**: Enhancing integration and allowing to take advantage of [IoC](http://en.wikipedia.org/wiki/Inversion_of_control) for implementing loosely-coupled maintainable services.
@@ -335,8 +335,7 @@ Additionaly, only for [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/Spr
 ### Servlets overridable methods
 The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overriden:
 * `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the pluggable resources (configuration file, action classes and render class). If not overridden, `JsonServlet.class.getClassLoader()` is returned.
-* `protected ObjectMapper getObjectMapper()`: To use a custom [ObjectMapper](http://fasterxml.github.io/jackson-databind/javadoc/2.3.0/com/fasterxml/jackson/databind/ObjectMapper.html) in the JSON to java binding.
-* `protected SchemaFactoryWrapper getSchemaFactory()`: To use a custom [SchemaFactoryWrapper](https://github.com/FasterXML/jackson-module-jsonSchema/blob/master/src/main/java/com/fasterxml/jackson/module/jsonSchema/factories/SchemaFactoryWrapper.java) in the java-class to schema binding.
+* `protected JsonCodec getJsonCodec()`: To use a different [JsonCodec](https://github.com/brutusin/commons/blob/master/src/main/java/org/brutusin/commons/json/codec/JsonCodec.java). Default implementation uses [DefaultJsonCodec](https://github.com/brutusin/commons/blob/master/src/main/java/org/brutusin/commons/json/codec/impl/DefaultJsonCodec.java). This extension point lets configure all JSON parsing/generation related behaviour; 
 * `protected Map<String, JsonAction> loadActions()`: To change the source actions are loaded from.
 * `protected List<String> getSupportedInitParams()`: If subclasses add new `init-param` parameters they have to be declared to be used. 
 
