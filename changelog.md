@@ -1,6 +1,6 @@
 #org.brutusin:jsonsrv changelog
 
-##2.0.2 (2015/02/01)
+##2.0.2 (2015/02/03)
 * Json codecs
 * Unregistered bug fixes
 
