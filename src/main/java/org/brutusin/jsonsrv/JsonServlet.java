@@ -15,23 +15,12 @@
  */
 package org.brutusin.jsonsrv;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.jsonSchema.factories.SchemaFactoryWrapper;
-import com.github.fge.jsonschema.core.exceptions.ProcessingException;
-import com.github.fge.jsonschema.core.report.ProcessingMessage;
-import com.github.fge.jsonschema.core.report.ProcessingReport;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -41,11 +30,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.brutusin.commons.json.codec.JsonCodec;
 import org.brutusin.commons.json.JsonHelper;
+import org.brutusin.commons.json.ParseException;
 import org.brutusin.commons.json.ValidationException;
+import org.brutusin.commons.json.codec.impl.DefaultJsonCodec;
 import org.brutusin.commons.utils.Miscellaneous;
 import org.brutusin.jsonsrv.impl.DefaultRenderer;
-import org.brutusin.jsonsrv.json.JsonsrvFactoryWrapper;
 import org.brutusin.jsonsrv.plugin.Renderer;
 
 /**
@@ -102,7 +93,7 @@ public class JsonServlet extends HttpServlet {
                 renderer = new DefaultRenderer();
             }
             renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
-            this.jsonHelper = new JsonHelper(getObjectMapper(), getSchemaFactory());
+            this.jsonHelper = new JsonHelper(getJsonCodec());
             stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
 
             Map<String, JsonAction> actions = loadActions();
@@ -193,11 +184,7 @@ public class JsonServlet extends HttpServlet {
         } catch (Exception ex) {
             jsonResponse = new JsonResponse();
             jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
-            try {
-                json = this.jsonHelper.getDataHelper().transform(jsonResponse);
-            } catch (JsonProcessingException pe) {
-                throw new AssertionError();
-            }
+            json = this.jsonHelper.getDataHelper().transform(jsonResponse);
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (jsonResponse != null && jsonResponse.getError() != null) {
@@ -244,14 +231,8 @@ public class JsonServlet extends HttpServlet {
         return JsonServlet.class.getClassLoader();
     }
 
-    protected ObjectMapper getObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return mapper;
-    }
-
-    protected SchemaFactoryWrapper getSchemaFactory() {
-        return new JsonsrvFactoryWrapper();
+    protected JsonCodec getJsonCodec() {
+        return new DefaultJsonCodec();
     }
 
     protected Map<String, JsonAction> loadActions() throws Exception {
@@ -298,26 +279,13 @@ public class JsonServlet extends HttpServlet {
             input = null;
         } else {
             try {
-                this.jsonHelper.getSchemaHelper().validate(service.getValidationInputSchema(), this.jsonHelper.parse(inputStr));
+                this.jsonHelper.getSchemaHelper().validate(service.getValidationInputSchema(), inputStr);
                 input = this.jsonHelper.getDataHelper().transform(inputStr, service.getInputClass());
-            } catch (ProcessingException ex) {
+            } catch (ParseException ex) {
                 json.setError(json.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
                 return json;
-            } catch (ValidationException ex) {
-                ProcessingReport report = ex.getReport();
-                Iterator<ProcessingMessage> iterator = report.iterator();
-                List<String> messages = new ArrayList();
-                while (iterator.hasNext()) {
-                    ProcessingMessage processingMessage = iterator.next();
-                    messages.add(processingMessage.getMessage());
-                }
-                json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, messages));
-                return json;
-            } catch (JsonParseException ex) {
-                json.setError(json.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
-                return json;
-            } catch (JsonMappingException ex) {
-                json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, Miscellaneous.getRootCauseMessage(ex)));
+            } catch (ValidationException vex) {
+                json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, vex.getMessages()));
                 return json;
             }
         }

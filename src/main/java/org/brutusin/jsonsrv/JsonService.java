@@ -15,9 +15,9 @@
  */
 package org.brutusin.jsonsrv;
 
-import com.github.fge.jsonschema.main.JsonSchema;
 import net.jodah.typetools.TypeResolver;
 import org.brutusin.commons.json.JsonHelper;
+import org.brutusin.commons.json.JsonSchema;
 
 /**
  *
