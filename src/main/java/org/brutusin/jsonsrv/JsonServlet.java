@@ -172,7 +172,12 @@ public class JsonServlet extends HttpServlet {
                         cache = true;
                     } else {
                         String inputStr = req.getParameter(PARAM_INPUT);
-                        jsonResponse = execute(service, inputStr);
+                        prepareActionContext(req, resp);
+                        try {
+                            jsonResponse = execute(service, inputStr);
+                        } finally {
+                            clearActionContext();
+                        }
                         if (jsonResponse.getError() == null) {
                             cache = service.getAction().isCacheable();
                         }
@@ -221,6 +226,24 @@ public class JsonServlet extends HttpServlet {
         } else {
             resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         }
+    }
+
+    private static void prepareActionContext(final HttpServletRequest req, final HttpServletResponse resp) {
+        JsonActionContext.setInstance(new JsonActionContext() {
+            @Override
+            public Object getRequest() {
+                return req;
+            }
+
+            @Override
+            public Object getResponse() {
+                return resp;
+            }
+        });
+    }
+
+    private static void clearActionContext() {
+        JsonActionContext.clear();
     }
 
     protected List<String> getSupportedInitParams() {
