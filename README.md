@@ -303,7 +303,8 @@ The algorithm is as follows:
 2. Perform conditional exection of the action:
   1.  If request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
   2.  Else: Perform action execution: `execute(I input)`.
-3. If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is instance of `ConditionalCachingInfo` but etags do not match (meaning client cached version is stale) then, the response is not cached and the following headers are returned in the HTTP response:```
+3. If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is instance of `ConditionalCachingInfo` but etags do not match (meaning client cached version is stale) then, the response is not cached and the following headers are returned in the HTTP response:
+```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=0, no-cache, no-store
 Pragma:no-cache
