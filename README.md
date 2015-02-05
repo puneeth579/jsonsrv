@@ -318,10 +318,12 @@ Cache-Control:max-age=<max-age>, private, must-revalidate
 **Conditional cacheable response**
 
 **Caching POST request**
+
 All responses allowing caching additionally contains  a `Content-Location` header to the *GET* url, if the method is *POST* as explained in ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3).
 
-**Expires header**
-Note the `Expires` header returning an outdated value in every response regardless of the case. This is for avoid legacy shared caches (intermediary proxies...) that ignore the cache-control header, caching the response as explained in [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3), since in every case the `private` directive is used.
+**Note on `Expires` header**
+
+An `Expires` header with an outdated value is returned in every response regardless of the case. This is for avoid legacy shared caches (intermediary proxies...) that ignore the cache-control header, caching the response as explained in [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3), since in every case the `private` directive is used.
 
 ##Configuration and extensions
 
