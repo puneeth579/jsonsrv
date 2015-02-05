@@ -300,7 +300,7 @@ The framework automatically handles caching depending on these factors:
 **Caching algorithm**: The following algorithm determines action execution and HTTP response contents:
 * Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for the current request.
 * Perform the conditional execution of the action, that is:
-  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution, set response status code to `304 (NOT MODIFIED)` and return no payload.
+  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution, set response status code to `304 (NOT MODIFIED)` and mark to not return no payload after headers processing.
   *  Else: Execute the action: `execute(I input)`.
 * If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, the response is not cacheable, the following HTTP headers are returned:
 ```
@@ -308,7 +308,7 @@ Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=0, no-cache, no-store
 Pragma:no-cache
 ```
-* Else if `CachingInfo` is an instance of `ConditionalCachingInfo`: 
+* Else if `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java): 
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control: private, must-revalidate
