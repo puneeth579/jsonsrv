@@ -1,6 +1,6 @@
 #org.brutusin:jsonsrv changelog
 
-##2.0.3 (not released yet)
+##2.1.0 (2015/02/05)
 * JsonActionContext
 * CachingInfo: Improved caching
 * `access-control-allow-origin` init parameter
