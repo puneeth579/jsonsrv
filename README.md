@@ -331,7 +331,7 @@ All responses allowing caching additionally contains  a `Content-Location` heade
 
 **Note on `Expires` header**:
 
-An `Expires` header with an outdated value is returned in every response regardless of the case. This is for avoid legacy shared caches (intermediary proxies...) that ignore the cache-control header, caching the response as explained in [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3), since in every case the `private` directive is used.
+An `Expires` header with an outdated value `Thu, 01 Jan 1970 00:00:00 GMT` is returned in every response regardless of the case. This is for avoid legacy shared caches (intermediary proxies...) that ignore the cache-control header, caching the response as explained in [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3), since in every case the `private` directive is used.
 
 ##Configuration and extensions
 
