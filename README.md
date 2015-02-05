@@ -219,7 +219,7 @@ This action will serve all the requests to the service, so [thread-safety issues
 On request processing the following methods are executed: 
 
 1. `getCachingInfo(I input)`: That returns caching information for this request.
-2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method this method is or is not executed. (see [caching section](#caching) for more details).
+2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method, this method is or is not executed. (see [caching section](#caching) for more details).
 
 ## Implementation details
 ###Serialization
@@ -298,9 +298,11 @@ The framework automatically handles caching depending on this three factors:
 * Conditional request header `If-None-Match` present
 
 The algorithm is as follows:
-
-* If an error occurred, no caching issues
-* Else if action is cacheable
+1. Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
+2. Perform conditional exection of the action
+  1.  
+3. If an error occurred, except `-32000` no caching issues.
+4. Else if execution is cacheable
 	* Compute response *etag* from as a hash of the JSON payload to be returned
 	* If a `If-None-Match` header is present in the request and its value is equals to computed *etag* (meaning that client cache is fresh), set response status code to `304 (NOT MODIFIED)` and return no payload
 	* Else, add response headers `Cache-Control:private` and `ETag` with the computed value and return the JSON payload in the HTTP response body. Additionally if the method is *POST* ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3) add a `Content-Location` header to the *GET* url
