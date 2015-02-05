@@ -3,6 +3,7 @@
 ##2.1.1 (not yet released)
 * Improved documentation
 * SecurityException -> HTTP 403
+* JsonActionContext security-related methods
 
 ##2.1.0 (2015/02/05)
 * JsonActionContext
