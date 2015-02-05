@@ -38,12 +38,13 @@ public class SpringJsonServlet extends JsonServlet {
     @Override
     protected Map<String, JsonAction> loadActions() throws Exception {
         String springConfigFile = getServletConfig().getInitParameter(INIT_PARAM_SPRING_CFG_FILE);
-        ApplicationContext applicationContext;
+        ClassPathXmlApplicationContext applicationContext;
         if (springConfigFile == null) {
             applicationContext = new ClassPathXmlApplicationContext(DEFAULT_CFG_FILE);
         } else {
             applicationContext = new ClassPathXmlApplicationContext(springConfigFile, DEFAULT_CFG_FILE);
         }
+        applicationContext.setClassLoader(getClassLoader());
         return applicationContext.getBeansOfType(JsonAction.class);
     }
 }
