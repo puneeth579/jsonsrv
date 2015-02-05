@@ -1,6 +1,8 @@
 #org.brutusin:jsonsrv changelog
 
-##2.1.1 (not yet released)
+##2.1.2 (not yet released)
+
+##2.1.1 (2015/02/05)
 * Improved documentation
 * SecurityException -> HTTP 403
 * JsonActionContext security-related methods
