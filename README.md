@@ -46,6 +46,7 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
       - [Status codes](#status-codes)
       - [Content-Type header](#content-type-header)
       - [Caching](#caching)
+      - [Getting servlet objects from actions](#getting-servlet-objects-from-actions)
   - [Configuration and extensions](#configuration-and-extensions)
     - [Custom renderers](#custom-renderers)
     - [Servlets init params](#servlets-init-params)
@@ -76,7 +77,7 @@ Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%2
 If you are not using maven and need help you can ask [here](https://github.com/brutusin/jsonsrv/issues).
 
 ###Service implementation
-Just extend from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), and ensure to define your input/output parameters as POJOs.
+Businness is coded in custom classes extending from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), using POJOs to define input/output parameters:
 
 Examples:
 ```java
@@ -325,6 +326,11 @@ Cache-Control:max-age=<max-age>, private, must-revalidate
 **Note on `POST` requests**: When a *POST* request is received, all responses allowing caching additionally contain  a `Content-Location` header pointing to the url of the *GET* version, as explained in ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3).
 
 **Note on `Expires` header**: An `Expires` header with an outdated value `Thu, 01 Jan 1970 00:00:00 GMT` is returned in every response regardless of the case. This is in order to avoid legacy shared caches (that might ignore the cache-control header) caching the response, since in every case the `private` directive is used. See [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3) for more details.
+
+### Getting servlet objects from actions
+Despite of being businness oriented, actions might need to use some servlet-related objects, like request, response, session, application ... 
+
+For this purpose,  the helper class [JsonActionContext](src/main/java/org/brutusin/jsonsrv/JsonActionContext.java) exists. By making use of thread-locality, this class lets the executing action access their current servlet-related objects, by simply calling 'JsonActionContext.getInstance()' in a static way.
 
 ##Configuration and extensions
 
