@@ -341,7 +341,7 @@ The following optional init-params are supported by both [JsonServlet](src/main/
 * `schema-parameter-disabled`: Accepts a boolean value for disabling schema queries. Default value is `false` (enabled)
 * `renderer`: Class name to the custom render to use. If not specified, the default renderer is used 
 * `render-param`: Additional parameter to be passed to the custom renderer, accessible via its `getInitParam()` method
-* `access-control-allow-origin`: Determines the presence and value of an `Access-Control-Allow-Origin` HTTP response header to enable [CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing). If not specified the header is not present in the responses.
+* `access-control-allow-origin`: Determines the presence and value of an `Access-Control-Allow-Origin` HTTP response header in order to enable [CORS](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing). If not specified the header is not present in the responses.
 
 Additionaly, only for [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java):
 * `spring-cfg`: Path to an additional (all `jsonsrv.xml` in classpath are always used) spring configuration file to use,
