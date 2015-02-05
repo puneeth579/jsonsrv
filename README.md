@@ -234,7 +234,7 @@ See [jackson-module-jsonSchema documentation](https://github.com/FasterXML/jacks
 * Property description 
 
 ###Response object and error handling
-All HTTP requests processed by the framework (via [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java)), return a JSON payload meeting the following schema:
+All HTTP requests processed by the framework return a JSON payload meeting the following schema:
 ```json
 {
   "type": "object",
