@@ -330,7 +330,7 @@ Cache-Control:max-age=<max-age>, private, must-revalidate
 ### Getting servlet objects from actions
 Despite of being businness oriented, actions might need to use some servlet-related objects, like request, response, session, application ... 
 
-For this purpose,  the helper class [JsonActionContext](src/main/java/org/brutusin/jsonsrv/JsonActionContext.java) exists. By making use of thread-locality, this class lets the executing action access their current servlet-related objects, by simply calling 'JsonActionContext.getInstance()' in a static way.
+For this purpose,  the helper class [JsonActionContext](src/main/java/org/brutusin/jsonsrv/JsonActionContext.java) exists. By making use of thread-locality, this class lets the executing action access their current servlet-related objects, by simply calling `JsonActionContext.getInstance()` in a static way.
 
 ##Configuration and extensions
 
