@@ -214,6 +214,9 @@ public class JsonServlet extends HttpServlet {
             } else if (jsonResponse.getError().getCode() == JsonResponse.Error.serviceNotFound.getCode()) {
                 cachingInfo = null;
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            } else if (jsonResponse.getError().getCode() == JsonResponse.Error.securityError.getCode()) {
+                cachingInfo = null;
+                resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
             } else if (jsonResponse.getError().getCode() == JsonResponse.Error.applicationError.getCode()) {
                 // Application error is considered another successful outcome     
             } else {
@@ -368,6 +371,11 @@ public class JsonServlet extends HttpServlet {
             Logger.getLogger(JsonServlet.class
                     .getName()).log(Level.WARNING, null, ex);
             jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.invalidInput, Miscellaneous.getRootCauseMessage(ex)));
+            return ret;
+        } catch (SecurityException ex) {
+            Logger.getLogger(JsonServlet.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.securityError, Miscellaneous.getRootCauseMessage(ex)));
             return ret;
         } catch (RuntimeException ex) {
             Logger.getLogger(JsonServlet.class

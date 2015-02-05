@@ -15,6 +15,9 @@
  */
 package org.brutusin.jsonsrv;
 
+import java.security.Principal;
+import javax.servlet.http.HttpServletRequest;
+
 /**
  *
  * @author Ignacio del Valle Alles idelvall@brutusin.org
@@ -38,5 +41,29 @@ public abstract class JsonActionContext {
     public abstract Object getRequest();
 
     public abstract Object getResponse();
+
+    public final Principal getUserPrincipal() {
+        HttpServletRequest req = getHttpServletRequest();
+        if (req == null) {
+            return null;
+        }
+        return req.getUserPrincipal();
+    }
+
+    public final boolean isUserInRole(String role) {
+        HttpServletRequest req = getHttpServletRequest();
+        if (req == null) {
+            return false;
+        }
+        return req.isUserInRole(role);
+    }
+
+    private HttpServletRequest getHttpServletRequest() {
+        Object request = getRequest();
+        if (request == null || !(request instanceof HttpServletRequest)) {
+            return null;
+        }
+        return (HttpServletRequest) request;
+    }
 
 }

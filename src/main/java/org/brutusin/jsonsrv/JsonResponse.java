@@ -29,7 +29,8 @@ public class JsonResponse<E> {
         serviceNotFound(-32601, "Service not found", "The service does not exist / is not available"),
         invalidInput(-32602, "Invalid input", "Invalid service input. Received input does not meet schema restrictions"),
         internalError(-32603, "Internal error", "Internal service error"),
-        applicationError(-32000,"Application error","Error contemplated by the application logic");
+        securityError(-32000,"Security error","Security error"),
+        applicationError(-32001,"Application error","Error contemplated by the application logic");
 
         private final int code;
         private final String name;
