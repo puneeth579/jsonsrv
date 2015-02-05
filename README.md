@@ -126,6 +126,7 @@ In the `web.xml` configure the following mapping for this framework servlet:
 </servlet-mapping>
 ...
 ```
+This way, all requests under the `/srv` path will be processed by it.
 
 #####Service registration
 Register the actions in order to the framework can find them, by creating a `jsonsrv.json` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.json")`).
@@ -143,7 +144,6 @@ Example:
   }
 ]
 ```
-This way, all requests under the `/srv` path will be processed by it.
 
 ####SpringJsonServlet
 #####Web module configuration
