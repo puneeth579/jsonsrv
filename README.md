@@ -297,30 +297,31 @@ The framework automatically handles caching depending on these factors:
 * Implementation of the `public CachingInfo getCachingInfo(I input)` method of the action (by default returns ´null´) meaning no caching
 * Conditional request header `If-None-Match` present
 
-The algorithm is as follows:
-
-1. Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
-2. Perform conditional exection of the action:
-  1.  If request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
-  2.  Else: Perform action execution: `execute(I input)`.
-3. If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is instance of `ConditionalCachingInfo` but etags do not match (meaning client cached version is stale) then, the response is not cached and the following headers are returned in the HTTP response:
+**Caching algorithm**
+* Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
+* Perform conditional exection of the action:
+  *  If request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
+  *  Else: Perform action execution: `execute(I input)`.
+* If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is instance of `ConditionalCachingInfo` but etags do not match (meaning client cached version is stale) then, the response is not cached and the following headers are returned in the HTTP response:
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=0, no-cache, no-store
 Pragma:no-cache
 ```
-4. `CachingInfo` is instance of `ConditionalCachingInfo` and etags do match (meaning that client cache is fresh): set response status code to `304 (NOT MODIFIED)` and return no payload.
-5. Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)):
-
-	* Compute response *etag* from as a hash of the JSON payload to be returned
-	* If a `If-None-Match` header is present in the request and its value is equals to computed *etag* (meaning that client cache is fresh), set response status code to `304 (NOT MODIFIED)` and return no payload
-	* Else, add response headers `Cache-Control:private` and `ETag` with the computed value and return the JSON payload in the HTTP response body. Additionally if the method is *POST* ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3) add a `Content-Location` header to the *GET* url
-* Else, return the following response headers:
+* `CachingInfo` is instance of `ConditionalCachingInfo` and etags do match (meaning that client cache is fresh): set response status code to `304 (NOT MODIFIED)` and return no payload.
+* Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)):
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
-Cache-Control:max-age=0, no-cache, no-store
-Pragma:no-cache
+Cache-Control:max-age=<max-age>, private, must-revalidate
 ```
+
+**Conditional cacheable response**
+
+**Caching POST request**
+All responses allowing caching additionally contains  a `Content-Location` header to the *GET* url, if the method is *POST* as explained in ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3).
+
+**Expires header**
+Note the `Expires` header returning an outdated value in every response regardless of the case. This is for avoid legacy shared caches (intermediary proxies...) that ignore the cache-control header, caching the response as explained in [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3), since in every case the `private` directive is used.
 
 ##Configuration and extensions
 
