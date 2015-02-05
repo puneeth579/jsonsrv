@@ -298,18 +298,18 @@ The framework automatically handles caching depending on these factors:
 * Conditional request header `If-None-Match` present.
 
 **Caching algorithm**: The following algorithm determines action execution and HTTP response contents:
-* Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
-* Perform conditional exection of the action:
-  *  If request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
-  *  Else: Perform action execution: `execute(I input)`.
-* If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is instance of `ConditionalCachingInfo` but etags do not match (meaning client cached version is stale) then, the response is not cached and the following headers are returned in the HTTP response:
+* Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for the current request.
+* Perform conditional execution of the action:
+  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution.
+  *  Else: Execute the action: `execute(I input)`.
+* If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is an instance of `ConditionalCachingInfo` but *etags* do not match (meaning client cached version is stale) then, the response is not cacheable and the following HTTP headers are returned:
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=0, no-cache, no-store
 Pragma:no-cache
 ```
-* `CachingInfo` is instance of `ConditionalCachingInfo` and etags do match (meaning that client cache is still fresh): set response status code to `304 (NOT MODIFIED)` and return no payload.
-* Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)):
+* Else if `CachingInfo` is an instance of `ConditionalCachingInfo` and *etags* do match (meaning that client cache is still fresh) then: set response status code to `304 (NOT MODIFIED)` and return no payload.
+* Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)) return the following unconditional caching HTTP headers:
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=<max-age>, private, must-revalidate
