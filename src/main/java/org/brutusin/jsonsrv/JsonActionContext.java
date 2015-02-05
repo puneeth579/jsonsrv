@@ -60,7 +60,7 @@ public abstract class JsonActionContext {
 
     private HttpServletRequest getHttpServletRequest() {
         Object request = getRequest();
-        if (request == null || !(request instanceof HttpServletRequest)) {
+        if (!(request instanceof HttpServletRequest)) {
             return null;
         }
         return (HttpServletRequest) request;
