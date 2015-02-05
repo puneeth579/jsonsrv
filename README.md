@@ -300,8 +300,9 @@ The framework automatically handles caching depending on this three factors:
 The algorithm is as follows:
 
 1. Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
-2. Perform conditional exection of the action
-  1.  
+2. Perform conditional exection of the action:
+  1.  If request is conditional (cointains an `ETag` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
+  2.  Else: Perform action execution: `execute(I input)`
 3. If an error occurred, except `-32000` no caching issues.
 4. Else if execution is cacheable
 	* Compute response *etag* from as a hash of the JSON payload to be returned
