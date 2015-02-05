@@ -317,7 +317,12 @@ Cache-Control:max-age=<max-age>, private, must-revalidate
 
 
 **Conditional cacheable response**:
-
+Whenever response is marked as conditionally cacheable, and regardless of the received etag the following headers are returned:
+```
+Expires:Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control: private, must-revalidate
+ETag: W/"<etag>"
+```
 
 **Caching POST request**:
 
