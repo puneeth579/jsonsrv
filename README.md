@@ -322,7 +322,7 @@ Cache-Control: private, must-revalidate
 ETag: W/"<etag>"
 ```
 
-**Caching POST request**: When a *POST* request is received, all responses allowing caching, additionally contain  a `Content-Location` header to the *GET* url, as explained in ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3).
+**Caching POST request**: When a *POST* request is received, all responses allowing caching additionally contain  a `Content-Location` header to the *GET* url, as explained in ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3).
 
 **Note on `Expires` header**: An `Expires` header with an outdated value `Thu, 01 Jan 1970 00:00:00 GMT` is returned in every response regardless of the case. This is in order to avoid legacy shared caches (that might ignore the cache-control header) caching the response, since in every case the `private` directive is used. See [rfc2616 sec14.9.3](http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3) for more details.
 
