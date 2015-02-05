@@ -133,8 +133,8 @@ public class JsonServlet extends HttpServlet {
             reqETag = null;
         } else {
             reqETag = req.getHeader("If-None-Match");
-            if (reqETag != null) {
-                reqETag = reqETag.replaceFirst("W/", "");
+            if (reqETag != null && reqETag.startsWith("W/\"")) {
+                reqETag = reqETag.substring(3, reqETag.length()-1);
             }
         }
         resp.addHeader("X-Powered-By", "jsonsrv");
@@ -207,28 +207,30 @@ public class JsonServlet extends HttpServlet {
             json = this.jsonHelper.getDataHelper().transform(jsonResponse);
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (jsonResponse
-                != null && jsonResponse.getError()
-                != null) {
+        if (jsonResponse != null && jsonResponse.getError() != null) {
             if (jsonResponse.getError().getCode() == JsonResponse.Error.internalError.getCode()) {
+                cachingInfo = null;
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } else if (jsonResponse.getError().getCode() == JsonResponse.Error.serviceNotFound.getCode()) {
+                cachingInfo = null;
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
             } else if (jsonResponse.getError().getCode() == JsonResponse.Error.applicationError.getCode()) {
                 // Application error is considered another successful outcome     
             } else {
+                cachingInfo = null;
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
         if (cachingInfo == null) {
             resp.addDateHeader("Expires", 0);
-            resp.addHeader("Cache-Control", "max-age=0, no-cache, no-store, must-revalidate");
+            resp.addHeader("Cache-Control", "max-age=0, no-cache, no-store");
             resp.addHeader("Pragma", "no-cache");
             renderer.service(getServletConfig(), req, resp, json, schemaMode, id);
         } else if (cachingInfo instanceof ConditionalCachingInfo) {
             ConditionalCachingInfo cc = (ConditionalCachingInfo) cachingInfo;
+            resp.addDateHeader("Expires", 0);
             resp.addHeader("Cache-Control", "private, must-revalidate");
-            resp.setHeader("ETag", "W/" + cc.getEtag());
+            resp.setHeader("ETag", "W/\"" + cc.getEtag()+"\"");
             if (req.getMethod().equals("POST")) {
                 addContentLocation(req, resp);
             }
@@ -242,6 +244,9 @@ public class JsonServlet extends HttpServlet {
             // max-age overrides expires. For legacy proxies (intermedy) cache control is ignored and no cache is performed, the desired behaviour for a private cache. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3
             resp.addDateHeader("Expires", 0);
             resp.addHeader("Cache-Control", "max-age=" + ec.getMaxAge() + ", private, must-revalidate");
+            if (req.getMethod().equals("POST")) {
+                addContentLocation(req, resp);
+            }
             renderer.service(getServletConfig(), req, resp, json, schemaMode, id);
         } else {
             throw new AssertionError();
