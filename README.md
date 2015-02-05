@@ -294,7 +294,7 @@ Depending on the returned JSON payload, the following status codes are returned:
 ####Caching
 The framework automatically handles caching depending on these factors: 
 * Execution with/without errors.
-* Implementation of the `public CachingInfo getCachingInfo(I input)` method of the action (by default returns `null`) meaning no caching.
+* Implementation of the `public CachingInfo getCachingInfo(I input)` method of the action (by default returns `null`, meaning no caching).
 * Conditional request header `If-None-Match` present.
 
 **Caching algorithm**: The following algorithm determines action execution and HTTP response contents:
