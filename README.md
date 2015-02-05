@@ -292,18 +292,23 @@ Depending on the returned JSON payload, the following status codes are returned:
 `Content-Type:application/json`
 
 ####Caching
-The framework automatically handles caching depending on this three factors: 
+The framework automatically handles caching depending on these factors: 
 * Execution without error
-* Implementation of the `public boolean isCacheable()` method of the action (by default returns ´false´) 
+* Implementation of the `public CachingInfo getCachingInfo(I input)` method of the action (by default returns ´null´) meaning no caching
 * Conditional request header `If-None-Match` present
 
 The algorithm is as follows:
 
 1. Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
 2. Perform conditional exection of the action:
-  1.  If request is conditional (cointains an `ETag` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
-  2.  Else: Perform action execution: `execute(I input)`
-3. If an error occurred, except `-32000` no caching issues.
+  1.  If request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches received etag, then: Skip action execution.
+  2.  Else: Perform action execution: `execute(I input)`.
+3. If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is instance of `ConditionalCachingInfo` but etags do not match (meaning client cached version is stale) then, the response is not cached and the following headers are returned in the HTTP response:
+```
+Expires:Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control:max-age=0, no-cache, no-store
+Pragma:no-cache
+```
 4. Else if execution is cacheable
 	* Compute response *etag* from as a hash of the JSON payload to be returned
 	* If a `If-None-Match` header is present in the request and its value is equals to computed *etag* (meaning that client cache is fresh), set response status code to `304 (NOT MODIFIED)` and return no payload
