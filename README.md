@@ -303,7 +303,7 @@ The framework automatically handles caching depending on these factors:
 **Caching algorithm**: The following algorithm determines action execution and HTTP response contents:
 * Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for the current request.
 * Perform the conditional execution of the action, that is:
-  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution, set response status code to `304 (NOT MODIFIED)` and mark the execution to not return no payload after headers processing.
+  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution, set response status code to `304 (NOT MODIFIED)` and mark the execution to return no payload after headers processing.
   *  Else: Execute the action: `execute(I input)`.
 * If an error occurred (except `-32000`) or execution `CachingInfo` is `null` then the response is not cacheable and the following HTTP headers are returned:
 ```
