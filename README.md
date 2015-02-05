@@ -314,7 +314,7 @@ Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control: private, must-revalidate
 ETag: W/"<etag>"
 ```
-* Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)) return the following unconditional caching HTTP headers:
+* Else (`CachingInfo` is an instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)) return the following unconditional caching HTTP headers:
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=<max-age>, private, must-revalidate
