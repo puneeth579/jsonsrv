@@ -1,5 +1,9 @@
 #org.brutusin:jsonsrv changelog
 
+##2.1.1 (not yet released)
+* Improved documentation
+* SecurityException -> HTTP 403
+
 ##2.1.0 (2015/02/05)
 * JsonActionContext
 * CachingInfo: Improved caching
