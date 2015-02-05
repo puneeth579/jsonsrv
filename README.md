@@ -85,11 +85,6 @@ public class HelloWorldAction extends JsonAction<String, String> {
     public String execute(String input) throws Exception {
         return "Hello " + input + "!";
     }
-   
-    @Override
-    public boolean isCacheable() {
-        return true;
-    }
 }
 ```
 
@@ -220,6 +215,10 @@ Service output schema | `srv?id=example&schema=o` | `{"type":"object","propertie
 On servlet initialization, the service mappings are loaded from the configuration file(s), and for each mapping, an instance of the action is created and bound to the service id.
 
 This action will serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
+
+On request processing the following methods are executed: 
+1. `getCachingInfo(I input)`: That returns caching information for this request.
+2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method this method is or is not executed. (see [caching section](#caching) for more details).
 
 ## Implementation details
 ###Serialization
