@@ -358,7 +358,7 @@ Additionaly, only for [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/Spr
 The following  [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java) methods can be overriden:
 * `protected ClassLoader getClassLoader()`: Lets specify a different *ClassLoader* for loading the pluggable resources (configuration file, action classes and render class). If not overridden, `JsonServlet.class.getClassLoader()` is returned.
 * `protected JsonCodec getJsonCodec()`: To use a different [JsonCodec](https://github.com/brutusin/commons/blob/master/src/main/java/org/brutusin/commons/json/codec/JsonCodec.java), that determines all JSON parsing/generation related behaviour. Default implementation uses [DefaultJsonCodec](https://github.com/brutusin/commons/blob/master/src/main/java/org/brutusin/commons/json/codec/impl/DefaultJsonCodec.java).
-* `protected Map<String, JsonAction> loadActions()`: To change the source actions are loaded from.
+* `protected Map<String, JsonAction> loadActions()`: To change the way actions are loaded.
 * `protected List<String> getSupportedInitParams()`: If subclasses add new `init-param` parameters they have to be declared to be used. 
 
 ##Example:
