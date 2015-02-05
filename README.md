@@ -300,26 +300,24 @@ The framework automatically handles caching depending on these factors:
 **Caching algorithm**: The following algorithm determines action execution and HTTP response contents:
 * Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for the current request.
 * Perform the conditional execution of the action, that is:
-  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution.
+  *  If the request is conditional (cointains an etag, i.e. `If-None-Match` HTTP header) and `CachingInfo` is an instance of [ConditionalCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ConditionalCachingInfo.java) and `ConditionalCachingInfo.getEtag()` matches the received etag, then: Skip the action execution, set response status code to `304 (NOT MODIFIED)` and return no payload.
   *  Else: Execute the action: `execute(I input)`.
-* If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, or `CachingInfo` is an instance of `ConditionalCachingInfo` but *etags* do not match (meaning client cached version is stale) then, the response is not cacheable and the following HTTP headers are returned:
+* If an error occurred (except `-32000`) or execution `CachingInfo` is `null`, the response is not cacheable, the following HTTP headers are returned:
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control:max-age=0, no-cache, no-store
 Pragma:no-cache
 ```
-* Else if `CachingInfo` is an instance of `ConditionalCachingInfo` and *etags* do match (meaning that client cache is still fresh) then: set response status code to `304 (NOT MODIFIED)` and return no payload.
-* Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)) return the following unconditional caching HTTP headers:
-```
-Expires:Thu, 01 Jan 1970 00:00:00 GMT
-Cache-Control:max-age=<max-age>, private, must-revalidate
-```
-
-**Conditional cacheable response**: Whenever the response is marked as conditionally cacheable, and regardless of the received etag, the following headers are returned:
+* Else if `CachingInfo` is an instance of `ConditionalCachingInfo`: 
 ```
 Expires:Thu, 01 Jan 1970 00:00:00 GMT
 Cache-Control: private, must-revalidate
 ETag: W/"<etag>"
+```
+* Else (`CachingInfo` is instance of [ExpiringCachingInfo](src/main/java/org/brutusin/jsonsrv/caching/ExpiringCachingInfo.java)) return the following unconditional caching HTTP headers:
+```
+Expires:Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control:max-age=<max-age>, private, must-revalidate
 ```
 
 **Caching POST request**: When a *POST* request is received, all responses allowing caching additionally contain  a `Content-Location` header pointing to the url of the *GET* version, as explained in ([rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) 4.3.3).
