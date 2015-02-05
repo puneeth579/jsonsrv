@@ -217,6 +217,7 @@ On servlet initialization, the service mappings are loaded from the configuratio
 This action will serve all the requests to the service, so [thread-safety issues](#threading-issues) should be considered.
 
 On request processing the following methods are executed: 
+
 1. `getCachingInfo(I input)`: That returns caching information for this request.
 2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method this method is or is not executed. (see [caching section](#caching) for more details).
 
