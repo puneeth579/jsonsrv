@@ -273,9 +273,9 @@ Code | Meaning  | Description
 -32700|Parse error|Invalid JSON was received by the server. An error occurred on the server while parsing the JSON input
 -32601|Service not found|The service does not exist / is not available
 -32602|Invalid input|Invalid service input. Returned when received input does not meet schema restrictions and when action `execute(..)` method throws an `IllegalArgumentException` 
--32000|Security error| In case of a `SecurityException` thrown by action `execute(..)`
--32001|Application error|Error contemplated by the application logic. In case of a checked exception thrown by action `execute(..)`
--32603|Internal error|In an internal error occurs or action `execute(..)` method throws an unchecked (runtime) exception.
+-32000|Security error| In case of a `SecurityException` thrown by action method `execute(..)`
+-32001|Application error|Error contemplated by the application logic. In case of a checked exception thrown by action method `execute(..)`
+-32603|Internal error|In an internal error occurs or action method `execute(..)` throws an unchecked (runtime) exception.
 
 ###HTTP response
 Although HTTP responses can be decorated using [custom renderers](#custom-renderers), the default behaviour is as follows:
