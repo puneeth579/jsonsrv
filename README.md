@@ -298,6 +298,7 @@ The framework automatically handles caching depending on this three factors:
 * Conditional request header `If-None-Match` present
 
 The algorithm is as follows:
+
 1. Call `getCachingInfo(I input)` and get the [CachingInfo](src/main/java/org/brutusin/jsonsrv/caching) instance for this request.
 2. Perform conditional exection of the action
   1.  
