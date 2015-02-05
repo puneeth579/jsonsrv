@@ -265,7 +265,7 @@ All HTTP requests processed by the framework return a JSON payload meeting the f
   }
 }
 ```
-being the `value` property schema dependent on the action queried. 
+being the `value` property schema dependent on the action queried (in fact, being the output schema of the service). 
 
 The following error codes are defined, aligned with the [JSON_RPC 2.0 specification](http://www.jsonrpc.org/specification#error_object):
 
