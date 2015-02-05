@@ -30,12 +30,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
+import org.brutusin.commons.Pair;
 import org.brutusin.commons.json.codec.JsonCodec;
 import org.brutusin.commons.json.JsonHelper;
 import org.brutusin.commons.json.ParseException;
 import org.brutusin.commons.json.ValidationException;
 import org.brutusin.commons.json.codec.impl.DefaultJsonCodec;
 import org.brutusin.commons.utils.Miscellaneous;
+import org.brutusin.jsonsrv.caching.CachingInfo;
+import org.brutusin.jsonsrv.caching.ConditionalCachingInfo;
+import org.brutusin.jsonsrv.caching.ExpiringCachingInfo;
 import org.brutusin.jsonsrv.impl.DefaultRenderer;
 import org.brutusin.jsonsrv.plugin.Renderer;
 
@@ -48,12 +52,13 @@ public class JsonServlet extends HttpServlet {
     public static final String INIT_PARAM_RENDERER = "renderer";
     public static final String INIT_PARAM_RENDERER_PARAM = "render-param";
     public static final String INIT_PARAM_DISABLE_SCHEMA = "schema-parameter-disabled";
+    public static final String INIT_PARAM_ACCESS_CONTROL = "access-control-allow-origin";
 
     public static final String PARAM_ID = "id";
     public static final String PARAM_INPUT = "input";
     public static final String PARAM_SCHEMA = "schema";
 
-    private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM);
+    private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM, INIT_PARAM_ACCESS_CONTROL);
 
     public enum SchemaMode {
 
@@ -66,6 +71,7 @@ public class JsonServlet extends HttpServlet {
     private JsonHelper jsonHelper;
     private Renderer renderer;
     private boolean schemaParameterDisabled;
+    private String accessControlOrigin;
 
     @Override
     public final void init() throws ServletException {
@@ -103,6 +109,8 @@ public class JsonServlet extends HttpServlet {
                 JsonService service = new JsonService(id, action, jsonHelper);
                 services.put(id, service);
             }
+
+            accessControlOrigin = getServletConfig().getInitParameter(INIT_PARAM_ACCESS_CONTROL);
         } catch (Exception ex) {
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
             throw new ServletException(ex);
@@ -125,6 +133,13 @@ public class JsonServlet extends HttpServlet {
             reqETag = null;
         } else {
             reqETag = req.getHeader("If-None-Match");
+            if (reqETag != null) {
+                reqETag = reqETag.replaceFirst("W/", "");
+            }
+        }
+        resp.addHeader("X-Powered-By", "jsonsrv");
+        if (accessControlOrigin != null) {
+            resp.addHeader("Access-Control-Allow-Origin", accessControlOrigin);
         }
         String id = req.getParameter(PARAM_ID);
         String schemaParam = req.getParameter(PARAM_SCHEMA);
@@ -134,7 +149,7 @@ public class JsonServlet extends HttpServlet {
         resp.setContentType("application/json");
         JsonResponse jsonResponse = null;
         String json;
-        boolean cache = false;
+        CachingInfo cachingInfo = null;
         SchemaMode schemaMode = null;
         try {
             if (schemaParam == null) {
@@ -156,7 +171,6 @@ public class JsonServlet extends HttpServlet {
                     jsonResponse = listServices();
                     json = this.jsonHelper.getDataHelper().transform(jsonResponse);
                 }
-                cache = true;
             } else {
                 JsonService service = services.get(id);
                 if (service == null) {
@@ -166,33 +180,36 @@ public class JsonServlet extends HttpServlet {
                 } else {
                     if (schemaMode == SchemaMode.I) {
                         json = service.getInputSchema();
-                        cache = true;
                     } else if (schemaMode == SchemaMode.O) {
                         json = service.getOutputSchema();
-                        cache = true;
                     } else {
                         String inputStr = req.getParameter(PARAM_INPUT);
                         prepareActionContext(req, resp);
                         try {
-                            jsonResponse = execute(service, inputStr);
+                            Pair<JsonResponse, CachingInfo> result = execute(service, inputStr, reqETag);
+                            jsonResponse = result.getElement1();
+                            cachingInfo = result.getElement2();
+                            if (jsonResponse != null) {
+                                json = this.jsonHelper.getDataHelper().transform(jsonResponse);
+                            } else {
+                                json = null;
+                            }
                         } finally {
                             clearActionContext();
                         }
-                        if (jsonResponse.getError() == null) {
-                            cache = service.getAction().isCacheable();
-                        }
-                        json = this.jsonHelper.getDataHelper().transform(jsonResponse);
+
                     }
                 }
             }
-
         } catch (Exception ex) {
             jsonResponse = new JsonResponse();
             jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
             json = this.jsonHelper.getDataHelper().transform(jsonResponse);
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (jsonResponse != null && jsonResponse.getError() != null) {
+        if (jsonResponse
+                != null && jsonResponse.getError()
+                != null) {
             if (jsonResponse.getError().getCode() == JsonResponse.Error.internalError.getCode()) {
                 resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             } else if (jsonResponse.getError().getCode() == JsonResponse.Error.serviceNotFound.getCode()) {
@@ -203,28 +220,31 @@ public class JsonServlet extends HttpServlet {
                 resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             }
         }
-        String etag;
-        if (cache) {
-            resp.addHeader("Cache-Control", "private");
-            etag = "\"" + String.valueOf((renderer.getClass() + json).hashCode()) + "\"";
+        if (cachingInfo == null) {
+            resp.addDateHeader("Expires", 0);
+            resp.addHeader("Cache-Control", "max-age=0, no-cache, no-store, must-revalidate");
+            resp.addHeader("Pragma", "no-cache");
+            renderer.service(getServletConfig(), req, resp, json, schemaMode, id);
+        } else if (cachingInfo instanceof ConditionalCachingInfo) {
+            ConditionalCachingInfo cc = (ConditionalCachingInfo) cachingInfo;
+            resp.addHeader("Cache-Control", "private, must-revalidate");
+            resp.setHeader("ETag", "W/" + cc.getEtag());
             if (req.getMethod().equals("POST")) {
                 addContentLocation(req, resp);
             }
-        } else {
-            etag = null;
-            if (jsonResponse.getError() == null) {
-                resp.addDateHeader("Expires", 0);
-                resp.addHeader("Cache-Control", "max-age=0, no-cache, no-store");
-                resp.addHeader("Pragma", "no-cache");
+            if (json != null) {
+                renderer.service(getServletConfig(), req, resp, json, schemaMode, id);
+            } else {
+                resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             }
-        }
-        if (reqETag == null || etag == null || !reqETag.equals(etag)) {
-            if (etag != null) {
-                resp.setHeader("ETag", etag);
-            }
+        } else if (cachingInfo instanceof ExpiringCachingInfo) {
+            ExpiringCachingInfo ec = (ExpiringCachingInfo) cachingInfo;
+            // max-age overrides expires. For legacy proxies (intermedy) cache control is ignored and no cache is performed, the desired behaviour for a private cache. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3
+            resp.addDateHeader("Expires", 0);
+            resp.addHeader("Cache-Control", "max-age=" + ec.getMaxAge() + ", private, must-revalidate");
             renderer.service(getServletConfig(), req, resp, json, schemaMode, id);
         } else {
-            resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+            throw new AssertionError();
         }
     }
 
@@ -248,10 +268,12 @@ public class JsonServlet extends HttpServlet {
 
     protected List<String> getSupportedInitParams() {
         return SUPPORTED_PARAMS;
+
     }
 
     protected ClassLoader getClassLoader() {
-        return JsonServlet.class.getClassLoader();
+        return JsonServlet.class
+                .getClassLoader();
     }
 
     protected JsonCodec getJsonCodec() {
@@ -264,8 +286,10 @@ public class JsonServlet extends HttpServlet {
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             String fileContents = IOUtils.toString(url.openStream(), "UTF-8");
-            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class);
-            if (ams != null) {
+            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class
+            );
+            if (ams
+                    != null) {
                 for (int i = 0; i < ams.length; i++) {
                     ActionMapping am = ams[i];
                     if (ret.containsKey(am.getId())) {
@@ -289,11 +313,16 @@ public class JsonServlet extends HttpServlet {
         return json;
     }
 
-    private JsonResponse execute(JsonService service, String inputStr) {
-        JsonResponse json = new JsonResponse();
+    /**
+     * jsonresponse = null means not-modified
+     */
+    private Pair<JsonResponse, CachingInfo> execute(JsonService service, String inputStr, String etag) {
+        Pair<JsonResponse, CachingInfo> ret = new Pair();
+        JsonResponse jsonResponse = new JsonResponse();
+        ret.setElement1(jsonResponse);
         if (service == null) {
-            json.setError(json.new ErrorDescription(JsonResponse.Error.serviceNotFound));
-            return json;
+            jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.serviceNotFound));
+            return ret;
         }
         JsonAction action = service.getAction();
         Object input;
@@ -305,31 +334,48 @@ public class JsonServlet extends HttpServlet {
                 this.jsonHelper.getSchemaHelper().validate(service.getValidationInputSchema(), inputStr);
                 input = this.jsonHelper.getDataHelper().transform(inputStr, service.getInputClass());
             } catch (ParseException ex) {
-                json.setError(json.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
-                return json;
+                jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
+                return ret;
             } catch (ValidationException vex) {
-                json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, vex.getMessages()));
-                return json;
+                jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.invalidInput, vex.getMessages()));
+                return ret;
             }
         }
         try {
-            Object output = action.execute(input);
-            json.setValue(output);
+            CachingInfo cachingInfo = action.getCachingInfo(input);
+            ret.setElement2(cachingInfo);
+            boolean execute = true;
+            if (etag != null && cachingInfo != null) {
+                if (cachingInfo instanceof ConditionalCachingInfo) {
+                    ConditionalCachingInfo conditionalCaching = (ConditionalCachingInfo) cachingInfo;
+                    if (conditionalCaching.getEtag().equals(etag)) {
+                        execute = false;
+                        ret.setElement1(null);
+                    }
+                }
+            }
+            if (execute) {
+                Object output = action.execute(input);
+                jsonResponse.setValue(output);
 
+            }
         } catch (IllegalArgumentException ex) {
-            Logger.getLogger(JsonServlet.class.getName()).log(Level.WARNING, null, ex);
-            json.setError(json.new ErrorDescription(JsonResponse.Error.invalidInput, Miscellaneous.getRootCauseMessage(ex)));
-            return json;
+            Logger.getLogger(JsonServlet.class
+                    .getName()).log(Level.WARNING, null, ex);
+            jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.invalidInput, Miscellaneous.getRootCauseMessage(ex)));
+            return ret;
         } catch (RuntimeException ex) {
-            Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
-            json.setError(json.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
-            return json;
+            Logger.getLogger(JsonServlet.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
+            return ret;
         } catch (Exception ex) {
-            Logger.getLogger(JsonServlet.class.getName()).log(Level.INFO, null, ex);
-            json.setError(json.new ErrorDescription(JsonResponse.Error.applicationError, Miscellaneous.getRootCauseMessage(ex)));
-            return json;
+            Logger.getLogger(JsonServlet.class
+                    .getName()).log(Level.INFO, null, ex);
+            jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.applicationError, Miscellaneous.getRootCauseMessage(ex)));
+            return ret;
         }
-        return json;
+        return ret;
     }
 
     private static void addContentLocation(HttpServletRequest req, HttpServletResponse resp) {

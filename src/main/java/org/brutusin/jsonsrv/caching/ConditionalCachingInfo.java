@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.brutusin.jsonsrv;
-
-import org.brutusin.jsonsrv.caching.CachingInfo;
+package org.brutusin.jsonsrv.caching;
 
 /**
  *
  * @author Ignacio del Valle Alles idelvall@brutusin.org
  */
-public abstract class JsonAction<I, O> {
+public final class ConditionalCachingInfo implements CachingInfo{
 
-    public CachingInfo getCachingInfo(I input) {
-        return null;
+    private final String etag;
+
+    public ConditionalCachingInfo(String etag) {
+        this.etag = etag;
     }
-
-    public abstract O execute(I input) throws Exception;
+    public String getEtag() {
+        return etag;
+    }
 }

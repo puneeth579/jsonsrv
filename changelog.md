@@ -2,6 +2,8 @@
 
 ##2.0.3 (not released yet)
 * JsonActionContext
+* CachingInfo: Improved caching
+* `access-control-allow-origin` init parameter
 
 ##2.0.2 (2015/02/03)
 * Json codecs
