@@ -1,6 +1,8 @@
 #org.brutusin:jsonsrv changelog
 
-##2.1.2 (not yet released)
+##2.1.2 (2015/02/07)
+* Improved documentation
+* SpringServlet classloader
 
 ##2.1.1 (2015/02/05)
 * Improved documentation
