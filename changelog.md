@@ -1,5 +1,8 @@
 #org.brutusin:jsonsrv changelog
 
+##2.1.3 (2015/02/08)
+* JSON SPI usage
+
 ##2.1.2 (2015/02/07)
 * Improved documentation
 * SpringServlet classloader
