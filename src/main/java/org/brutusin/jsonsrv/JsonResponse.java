@@ -15,7 +15,7 @@
  */
 package org.brutusin.jsonsrv;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import org.brutusin.commons.json.annotations.JsonProperty;
 
 /**
  *

@@ -31,11 +31,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.brutusin.commons.Pair;
-import org.brutusin.commons.json.codec.JsonCodec;
 import org.brutusin.commons.json.JsonHelper;
 import org.brutusin.commons.json.ParseException;
 import org.brutusin.commons.json.ValidationException;
-import org.brutusin.commons.json.codec.impl.DefaultJsonCodec;
 import org.brutusin.commons.utils.Miscellaneous;
 import org.brutusin.jsonsrv.caching.CachingInfo;
 import org.brutusin.jsonsrv.caching.ConditionalCachingInfo;
@@ -68,7 +66,6 @@ public class JsonServlet extends HttpServlet {
     private final Map<String, JsonService> services = new HashMap();
 
     private String stringArraySchema;
-    private JsonHelper jsonHelper;
     private Renderer renderer;
     private boolean schemaParameterDisabled;
     private String accessControlOrigin;
@@ -99,14 +96,13 @@ public class JsonServlet extends HttpServlet {
                 renderer = new DefaultRenderer();
             }
             renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
-            this.jsonHelper = new JsonHelper(getJsonCodec());
-            stringArraySchema = this.jsonHelper.getSchemaHelper().getSchemaString(String[].class);
+            stringArraySchema = JsonHelper.getInstance().getSchemaHelper().getSchemaString(String[].class);
 
             Map<String, JsonAction> actions = loadActions();
             for (Map.Entry<String, JsonAction> entry : actions.entrySet()) {
                 String id = entry.getKey();
                 JsonAction action = entry.getValue();
-                JsonService service = new JsonService(id, action, jsonHelper);
+                JsonService service = new JsonService(id, action, JsonHelper.getInstance());
                 services.put(id, service);
             }
 
@@ -134,7 +130,7 @@ public class JsonServlet extends HttpServlet {
         } else {
             reqETag = req.getHeader("If-None-Match");
             if (reqETag != null && reqETag.startsWith("W/\"")) {
-                reqETag = reqETag.substring(3, reqETag.length()-1);
+                reqETag = reqETag.substring(3, reqETag.length() - 1);
             }
         }
         resp.addHeader("X-Powered-By", "jsonsrv");
@@ -169,14 +165,14 @@ public class JsonServlet extends HttpServlet {
                     json = this.stringArraySchema;
                 } else {
                     jsonResponse = listServices();
-                    json = this.jsonHelper.getDataHelper().transform(jsonResponse);
+                    json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
                 }
             } else {
                 JsonService service = services.get(id);
                 if (service == null) {
                     jsonResponse = new JsonResponse();
                     jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.serviceNotFound));
-                    json = this.jsonHelper.getDataHelper().transform(jsonResponse);
+                    json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
                 } else {
                     if (schemaMode == SchemaMode.I) {
                         json = service.getInputSchema();
@@ -190,7 +186,7 @@ public class JsonServlet extends HttpServlet {
                             jsonResponse = result.getElement1();
                             cachingInfo = result.getElement2();
                             if (jsonResponse != null) {
-                                json = this.jsonHelper.getDataHelper().transform(jsonResponse);
+                                json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
                             } else {
                                 json = null;
                             }
@@ -204,7 +200,7 @@ public class JsonServlet extends HttpServlet {
         } catch (Exception ex) {
             jsonResponse = new JsonResponse();
             jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
-            json = this.jsonHelper.getDataHelper().transform(jsonResponse);
+            json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (jsonResponse != null && jsonResponse.getError() != null) {
@@ -233,7 +229,7 @@ public class JsonServlet extends HttpServlet {
             ConditionalCachingInfo cc = (ConditionalCachingInfo) cachingInfo;
             resp.addDateHeader("Expires", 0);
             resp.addHeader("Cache-Control", "private, must-revalidate");
-            resp.setHeader("ETag", "W/\"" + cc.getEtag()+"\"");
+            resp.setHeader("ETag", "W/\"" + cc.getEtag() + "\"");
             if (req.getMethod().equals("POST")) {
                 addContentLocation(req, resp);
             }
@@ -284,18 +280,13 @@ public class JsonServlet extends HttpServlet {
                 .getClassLoader();
     }
 
-    protected JsonCodec getJsonCodec() {
-        return new DefaultJsonCodec();
-    }
-
     protected Map<String, JsonAction> loadActions() throws Exception {
         Map<String, JsonAction> ret = new HashMap();
         Enumeration<URL> urls = getClassLoader().getResources("jsonsrv.json");
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             String fileContents = IOUtils.toString(url.openStream(), "UTF-8");
-            ActionMapping[] ams = this.jsonHelper.getDataHelper().transform(fileContents, ActionMapping[].class
-            );
+            ActionMapping[] ams = JsonHelper.getInstance().getDataHelper().parse(fileContents, ActionMapping[].class);
             if (ams
                     != null) {
                 for (int i = 0; i < ams.length; i++) {
@@ -339,8 +330,8 @@ public class JsonServlet extends HttpServlet {
             input = null;
         } else {
             try {
-                this.jsonHelper.getSchemaHelper().validate(service.getValidationInputSchema(), inputStr);
-                input = this.jsonHelper.getDataHelper().transform(inputStr, service.getInputClass());
+                JsonHelper.getInstance().getSchemaHelper().validate(service.getValidationInputSchema(), inputStr);
+                input = JsonHelper.getInstance().getDataHelper().parse(inputStr, service.getInputClass());
             } catch (ParseException ex) {
                 jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
                 return ret;

@@ -17,7 +17,7 @@ package org.brutusin.jsonsrv;
 
 import net.jodah.typetools.TypeResolver;
 import org.brutusin.commons.json.JsonHelper;
-import org.brutusin.commons.json.JsonSchema;
+import org.brutusin.commons.json.spi.JsonSchema;
 
 /**
  *
