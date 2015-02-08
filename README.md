@@ -223,9 +223,7 @@ On request processing the following methods are executed:
 
 ## Implementation details
 ###JSON SPI
-This module makes use of the [JSON SPI](https://github.com/brutusin/commons/tree/master/src/main/java/org/brutusin/commons/json/spi), so a JSON service provider like [json-codec-jackson](https://github.com/brutusin/json-codec-jackson) is needed at runtime.
-
-The choosen provider will determine JSON serialization, validation, parsing and schema generation.
+This module makes use of the [JSON SPI](https://github.com/brutusin/commons/tree/master/src/main/java/org/brutusin/commons/json/spi), so a JSON service provider like [json-codec-jackson](https://github.com/brutusin/json-codec-jackson) is needed at runtime. The choosen provider will determine JSON serialization, validation, parsing and schema generation.
 
 ###Threading issues
 The framework creates a single action instance per service (action mapping in `jsonsrv.json`) to serve all requests, that is, actions will run on a multithreaded environment, so be aware that they must handle concurrent requests and be careful to synchronize access to shared resources.
