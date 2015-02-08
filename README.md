@@ -38,9 +38,8 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
     - [Running](#running)
   - [Action life-cycle](#action-life-cycle)
   - [Implementation details](#implementation-details)
-    - [Serialization](#serialization)
+    - [JSON SPI](#json-spi)
     - [Threading issues](#threading-issues)
-    - [Schema customization](#schema-customization)
     - [Response object and error handling](#response-object-and-error-handling)
     - [HTTP response](#http-response)
       - [Status codes](#status-codes)
@@ -223,15 +222,13 @@ On request processing the following methods are executed:
 2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method, this method is or is not executed. (see [caching section](#caching) for more details).
 
 ## Implementation details
-###Serialization
-Use POJOs as the service aguments/return types, and avoid cyclic references. See [jackson-databind documentation](https://github.com/FasterXML/jackson-databind) for more details.
+###JSON SPI
+This module makes use of the [JSON SPI](https://github.com/brutusin/commons/tree/master/src/main/java/org/brutusin/commons/json/spi), so a JSON service provider like [json-codec-jackson](https://github.com/brutusin/json-codec-jackson) is needed at runtime.
+
+The choosen provider will determine JSON serialization, validation, parsing and schema generation.
+
 ###Threading issues
 The framework creates a single action instance per service (action mapping in `jsonsrv.json`) to serve all requests, that is, actions will run on a multithreaded environment, so be aware that they must handle concurrent requests and be careful to synchronize access to shared resources.
-###Schema customization
-See [jackson-module-jsonSchema documentation](https://github.com/FasterXML/jackson-module-jsonSchema) for supported schema generation features, like:
-* Required properties
-* Property name
-* Property description 
 
 ###Response object and error handling
 All HTTP requests processed by the framework return a JSON payload meeting the following schema:
@@ -370,9 +367,10 @@ A complete example project is available at [jsonsrv-example](https://github.com/
 
 ##Main stack
 This module could not be possible without:
-* [FasterXML/jackson stack](https://github.com/FasterXML/jackson): The underlying JSON stack.
-* [com.fasterxml.jackson.module:jackson-module-jsonSchema](https://github.com/FasterXML/jackson-module-jsonSchema): For java class to JSON schema mapping 
-* [com.github.fge:json-schema-validator](https://github.com/fge/json-schema-validator): For validation against a JSON schema
+* Now moved to [json-codec-jackson](https://github.com/brutusin/json-codec-jackson), but key libraries in the project startup:
+  * [FasterXML/jackson stack](https://github.com/FasterXML/jackson): The underlying JSON stack for the .
+  * [com.fasterxml.jackson.module:jackson-module-jsonSchema](https://github.com/FasterXML/jackson-module-jsonSchema): For java class to JSON schema mapping 
+  * [com.github.fge:json-schema-validator](https://github.com/fge/json-schema-validator): For validation against a JSON schema
 * [Spring IoC](http://projects.spring.io/spring-framework/): Used optionally to load service mappings from Spring
 
 ## Brutusin dependent modules
