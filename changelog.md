@@ -1,5 +1,8 @@
 #org.brutusin:jsonsrv changelog
 
+##2.1.4 (2015/02/12)
+* Reduced transitive dependencies via [jarjar](https://github.com/sonatype/jarjar-maven-plugin)
+
 ##2.1.3 (2015/02/08)
 * JSON SPI usage
 
