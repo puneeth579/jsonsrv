@@ -178,7 +178,7 @@ Example:
 ```java
 public class HelloWorldAction extends SafeAction<String, String> {
     @Override
-    public CachingInfo getCachingInfo(Void input) {
+    public CachingInfo getCachingInfo(String input) {
         return ExpiringCachingInfo.ONE_DAY;
     }
     
