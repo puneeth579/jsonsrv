@@ -172,9 +172,22 @@ According to [rfc7231 4.2.1](http://www.rfc-editor.org/rfc/rfc7231.txt):
    property, or unusual burden on the origin server...
 
 ####SafeAction
-[SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java) is used to implement *safe* business logic, that is, this logic that has no side-effects expected by the user.
+[SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java) is used to implement *safe* business logic, that is, this logic that has no side-effects expected by the user. Results of these actions are [cacheable](#caching), and both `GET` and `POST` request methods are supported.
 
-Results of these actions are cacheable, and both `GET` and `POST` request methods are supported.
+Examples:
+```java
+public class HelloWorldAction extends SafeAction<String, String> {
+    @Override
+    public CachingInfo getCachingInfo(Void input) {
+        return ExpiringCachingInfo.ONE_DAY;
+    }
+    
+    @Override
+    public String execute(String input) throws Exception {
+        return "Hello " + input + "!";
+    }
+}
+```
 
 ####UnsafeAction
 On the other side, [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java) is used to implement *unsafe* business logic, that has side-effects expected by the user, like for example, business model state changes.
@@ -183,26 +196,14 @@ Results of these actions are not cacheable, and only `POST` request method is su
 
 Examples:
 ```java
-public class HelloWorldAction extends JsonAction<String, String> {
+public class CheckoutAction extends UnsafeAction<Void, Void> {
     @Override
-    public String execute(String input) throws Exception {
-        return "Hello " + input + "!";
-    }
-}
-```
-
-```java
-public class GetDateAction extends JsonAction<Void, String> {
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat();
-
-    @Override
-    public String execute(Void input) throws Exception {
-        return dateFormat.format(new Date());
-    }
-
-    public void setDatePattern(String pattern) {
-        dateFormat = new SimpleDateFormat(pattern);
+    public void execute() throws Exception {
+        // get shopping cart from HttpSession
+        // start transaction
+        // perform payment
+        // update stock
+        // end transaction
     }
 }
 ```
