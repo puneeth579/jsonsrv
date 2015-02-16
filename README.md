@@ -122,6 +122,7 @@ public class CheckoutAction extends UnsafeAction<Void, Void> {
     }
 }
 ```
+
 ###Service registration
 Two alternative framework servlets are available, covering two different configuration scenarios: 
 * [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java): Base servlet that loads service definitions from `jsonsrv.json` (explained later). No dependency injection supported.
@@ -188,6 +189,7 @@ In the `web.xml` configure the following mapping for this framework servlet:
 ```
 
 **Service registration**
+
 Register the actions in order to the framework can find them, by creating a `jsonsrv.xml` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.xml")`).
 
 Example:
