@@ -1,8 +1,9 @@
 #org.brutusin:jsonsrv changelog
 
-##2.1.7 (2015/02/13)
-* isSafe() in actions -> GET/POST validation
+##2.2.0 (2015/02/16)
+* Safe/Unsafe actions
 * Renderer new param: JsonService
+* Improved documentation
 
 ##2.1.5/6 (2015/02/13)
 * Improved documentation
