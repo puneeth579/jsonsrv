@@ -32,9 +32,9 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
     - [Framework servlets](#framework-servlets)
       - [JsonServlet](#jsonservlet)
       - [SpringJsonServlet](#springjsonservlet)
-    - [Web module configuration](#web-module-configuration)
     - [Service implementation](#service-implementation)
-    - [Service registration](#service-registration)
+      - [SafeAction](#safeaction)
+      - [UnSafeAction](#unsafeaction)
     - [Running](#running)
   - [Action life-cycle](#action-life-cycle)
   - [Implementation details](#implementation-details)
@@ -74,35 +74,6 @@ This library is meant to be used by a java web module. If you are using maven, a
 Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%20a%3A%22jsonsrv%22) to see the latest available version released to the Maven Central Repository.
 
 If you are not using maven and need help you can ask [here](https://github.com/brutusin/jsonsrv/issues).
-
-###Service implementation
-Business is coded in custom classes extending from [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java), using POJOs to define input/output parameters:
-
-Examples:
-```java
-public class HelloWorldAction extends JsonAction<String, String> {
-    @Override
-    public String execute(String input) throws Exception {
-        return "Hello " + input + "!";
-    }
-}
-```
-
-```java
-public class GetDateAction extends JsonAction<Void, String> {
-
-    private SimpleDateFormat dateFormat = new SimpleDateFormat();
-
-    @Override
-    public String execute(Void input) throws Exception {
-        return dateFormat.format(new Date());
-    }
-
-    public void setDatePattern(String pattern) {
-        dateFormat = new SimpleDateFormat(pattern);
-    }
-}
-```
 
 ###Framework servlets
 Two alternative framework servlets are available, covering two different configuration scenarios: 
@@ -189,6 +160,38 @@ The framework will automatically find all beans of the spring context that are i
 
 Notice that the same action class can be used by different services, an dependency injection can be used. 
 
+###Service implementation
+Business is coded in custom classes extending either from [SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java), or [UnSafeAction](src/main/java/org/brutusin/jsonsrv/UnSafeAction.java), and using POJOs to define input/output parameters.
+
+####SafeAction
+
+####UnSafeAction
+
+Examples:
+```java
+public class HelloWorldAction extends JsonAction<String, String> {
+    @Override
+    public String execute(String input) throws Exception {
+        return "Hello " + input + "!";
+    }
+}
+```
+
+```java
+public class GetDateAction extends JsonAction<Void, String> {
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat();
+
+    @Override
+    public String execute(Void input) throws Exception {
+        return dateFormat.format(new Date());
+    }
+
+    public void setDatePattern(String pattern) {
+        dateFormat = new SimpleDateFormat(pattern);
+    }
+}
+```
 
 ###Running
 
