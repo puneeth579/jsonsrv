@@ -163,7 +163,7 @@ Notice that the same action class can be used by different services, an dependen
 ###Service implementation
 Business is coded in custom classes extending either from [SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java), or [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java), and using POJOs to define input/output parameters. 
 
-According to [rfc7231 4.2.1](http://www.rfc-editor.org/rfc/rfc7231.txt):
+According to [rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) section 4.2.1:
 > ... Request methods are considered "safe" if their defined semantics are
    essentially read-only; i.e., the client does not request, and does
    not expect, any state change on the origin server as a result of
