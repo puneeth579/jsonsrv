@@ -128,7 +128,8 @@ Two alternative framework servlets are available, covering two different configu
 * [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java): Extending the previous servlet, this servlet loads the service definitions from [Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html) configuration XML files (by default `jsonsrv.xml`). Spring dependencies have a `<scope>provided</scope>` in this module, so in order to use this servlet, [org.springframework:spring-context](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.springframework%22%20a%3A%22spring-context%22) artifacts must be provided by the client module at runtime. 
 
 ####JsonServlet
-*Web module configuration*
+**Web module configuration**
+
 In the `web.xml` configure the following mapping for this framework servlet:
 
 ```xml
@@ -145,7 +146,8 @@ In the `web.xml` configure the following mapping for this framework servlet:
 ```
 This way, all requests under the `/srv` path will be processed by it.
 
-*Service registration*
+**Service registration**
+
 Register the actions in order to the framework can find them, by creating a `jsonsrv.json` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.json")`).
 
 Example:
@@ -163,7 +165,8 @@ Example:
 ```
 
 ####SpringJsonServlet
-*Web module configuration*
+**Web module configuration**
+
 In the `web.xml` configure the following mapping for this framework servlet:
 
 ```xml
@@ -184,7 +187,7 @@ In the `web.xml` configure the following mapping for this framework servlet:
 ...
 ```
 
-*Service registration*
+**Service registration**
 Register the actions in order to the framework can find them, by creating a `jsonsrv.xml` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.xml")`).
 
 Example:
