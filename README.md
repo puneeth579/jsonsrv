@@ -87,7 +87,7 @@ According to [rfc7231](http://www.rfc-editor.org/rfc/rfc7231.txt) section 4.2.1:
    property, or unusual burden on the origin server...
 
 ####SafeAction
-[SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java) is used to implement *safe* business logic, that is, this logic that has no side-effects expected by the user. Results of these actions are [cacheable](#caching), and both `GET` and `POST` request methods are supported.
+[SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java) is used to implement *safe* business logic, that is, logic that has no side-effects expected by the user. Results of these actions are [cacheable](#caching), and both `GET` and `POST` request methods are allowed.
 
 Example:
 ```java
@@ -105,9 +105,9 @@ public class HelloWorldAction extends SafeAction<String, String> {
 ```
 
 ####UnsafeAction
-On the other side, [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java) is used to implement *unsafe* business logic, that has side-effects expected by the user, like for example, business model state changes.
+On the other side, [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java) is used to implement *unsafe* business logic, that has side-effects expected by the user, like for example, business a model state change.
 
-Results of these actions are not cacheable, and only `POST` request method is supported.
+Results of these actions are not cacheable, and only the `POST` request method is allowed.
 
 Example:
 ```java
