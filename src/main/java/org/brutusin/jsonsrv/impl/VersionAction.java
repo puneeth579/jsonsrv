@@ -15,17 +15,18 @@
  */
 package org.brutusin.jsonsrv.impl;
 
-import org.brutusin.jsonsrv.JsonAction;
+import org.brutusin.jsonsrv.SafeAction;
 import org.brutusin.jsonsrv.utils.JsonSrvUtils;
 
 /**
  *
  * @author Ignacio del Valle Alles idelvall@brutusin.org
  */
-public class VersionAction extends JsonAction<Void, String> {
+public class VersionAction extends SafeAction<Void, String> {
 
     @Override
     public String execute(Void input) throws Exception {
         return JsonSrvUtils.getVersion();
     }
+
 }

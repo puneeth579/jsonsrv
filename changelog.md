@@ -1,5 +1,13 @@
 #org.brutusin:jsonsrv changelog
 
+##2.1.7 (2015/02/13)
+* isSafe() in actions -> GET/POST validation
+* Renderer new param: JsonService
+
+##2.1.5/6 (2015/02/13)
+* Improved documentation
+* Unregistered bug fixes
+
 ##2.1.4 (2015/02/12)
 * Reduced transitive dependencies via [jarjar](https://github.com/sonatype/jarjar-maven-plugin)
 

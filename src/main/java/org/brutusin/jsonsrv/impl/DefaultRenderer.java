@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.brutusin.jsonsrv.JsonService;
 import org.brutusin.jsonsrv.JsonServlet;
 import org.brutusin.jsonsrv.plugin.Renderer;
 
@@ -26,10 +27,10 @@ import org.brutusin.jsonsrv.plugin.Renderer;
  *
  * @author Ignacio del Valle Alles idelvall@brutusin.org
  */
-public class DefaultRenderer extends Renderer{
+public class DefaultRenderer extends Renderer {
 
     @Override
-    public void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode, String serviceId) throws IOException {
+    public void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode, JsonService service) throws IOException {
         resp.getWriter().print(json);
     }
 }

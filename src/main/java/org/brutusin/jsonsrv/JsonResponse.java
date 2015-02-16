@@ -30,7 +30,8 @@ public class JsonResponse<E> {
         invalidInput(-32602, "Invalid input", "Invalid service input. Received input does not meet schema restrictions"),
         internalError(-32603, "Internal error", "Internal service error"),
         securityError(-32000,"Security error","Security error"),
-        applicationError(-32001,"Application error","Error contemplated by the application logic");
+        applicationError(-32001,"Application error","Error contemplated by the application logic"),
+        invalidMethodError(-32002,"HTTP invalid method","The HTTP method used in the request is not allowed by target resource");
 
         private final int code;
         private final String name;

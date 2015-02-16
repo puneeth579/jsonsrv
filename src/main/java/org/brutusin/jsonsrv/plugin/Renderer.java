@@ -19,6 +19,7 @@ import java.io.IOException;
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.brutusin.jsonsrv.JsonService;
 import org.brutusin.jsonsrv.JsonServlet;
 
 /**
@@ -35,5 +36,5 @@ public abstract class Renderer {
         // to be overridden
     }
     
-    public abstract void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode, String serviceId) throws IOException;
+    public abstract void service(ServletConfig servletConfig, HttpServletRequest req, HttpServletResponse resp, String json, JsonServlet.SchemaMode schemaMode, JsonService service) throws IOException;
 }

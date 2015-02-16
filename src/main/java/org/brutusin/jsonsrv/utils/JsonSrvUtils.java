@@ -16,7 +16,7 @@
 package org.brutusin.jsonsrv.utils;
 
 import java.io.IOException;
-import org.apache.commons.io.IOUtils;
+import org.brutusin.commons.utils.Miscellaneous;
 import org.brutusin.jsonsrv.impl.VersionAction;
 
 /**
@@ -30,7 +30,7 @@ public class JsonSrvUtils {
 
     public static String getVersion() {
         try {
-            return IOUtils.toString(VersionAction.class.getClassLoader().getResourceAsStream("jsonsrv.version"), "UTF-8");
+            return Miscellaneous.toString(VersionAction.class.getClassLoader().getResourceAsStream("jsonsrv.version"), "UTF-8");
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

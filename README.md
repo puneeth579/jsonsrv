@@ -271,6 +271,7 @@ Code | Meaning  | Description
 -32602|Invalid input|Invalid service input. Returned when received input does not meet schema restrictions and when action `execute(..)` method throws an `IllegalArgumentException` 
 -32000|Security error| In case of a `SecurityException` thrown by action method `execute(..)`
 -32001|Application error|Error contemplated by the application logic. In case of a checked exception thrown by action method `execute(..)`
+-32002|HTTP invalid method|The request method is not allowed by target resource. In case of a GET request to an unsafe action or of a POST request to a safe action.
 -32603|Internal error|In an internal error occurs or action method `execute(..)` throws an unchecked (runtime) exception.
 
 ###HTTP response
@@ -284,6 +285,7 @@ Depending on the returned JSON payload, the following status codes are returned:
 400 | if `error.code` equals `-32700` or `-32602`
 403 | if `error.code` equals `-32000`)
 404 | if `error.code` equals `-32601`)
+405 | if `error.code` equals `-32002`)
 500 | any other error
 
 ####Content-Type header
