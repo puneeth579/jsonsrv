@@ -105,7 +105,7 @@ public class HelloWorldAction extends SafeAction<String, String> {
 ```
 
 ####UnsafeAction
-On the other side, [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java) is used to implement *unsafe* business logic, that has side-effects expected by the user, like for example, a business model state change.
+On the other side, [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java) is used to implement *unsafe* business logic, that has side-effects expected by the user, like for example, a state change in a business model.
 
 Results of these actions are not cacheable, and only the `POST` request method is allowed.
 
