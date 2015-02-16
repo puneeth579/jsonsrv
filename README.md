@@ -289,7 +289,7 @@ Code | Meaning  | Description
 -32602|Invalid input|Invalid service input. Returned when received input does not meet schema restrictions and when action `execute(..)` method throws an `IllegalArgumentException` 
 -32000|Security error| In case of a `SecurityException` thrown by action method `execute(..)`
 -32001|Application error|Error contemplated by the application logic. In case of a checked exception thrown by action method `execute(..)`
--32002|HTTP invalid method|The request method is not allowed by target resource. In case of a GET request to an unsafe action or of a POST request to a safe action.
+-32002|HTTP invalid method|The request method is not allowed by target resource. In case of a GET request to an unsafe action.
 -32603|Internal error|In an internal error occurs or action method `execute(..)` throws an unchecked (runtime) exception.
 
 ###HTTP response
