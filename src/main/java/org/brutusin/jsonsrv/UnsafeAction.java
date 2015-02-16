@@ -22,9 +22,8 @@ package org.brutusin.jsonsrv;
  * by several threads concurrently, so implementing subclasses must be
  * thread-safe.
  * <br/><br/>
- * See section 4.2.1 of <a
- * href="http://www.rfc-editor.org/rfc/rfc7231.txt}">rfc7231</a> for more
- * details.
+ * See section 4.2.1 of <a href="http://www.rfc-editor.org/rfc/rfc7231.txt}">rfc7231</a> 
+ * for more details.
  *
  * @see SafeAction
  * @author Ignacio del Valle Alles idelvall@brutusin.org
