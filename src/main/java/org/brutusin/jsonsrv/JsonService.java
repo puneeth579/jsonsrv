@@ -16,7 +16,7 @@
 package org.brutusin.jsonsrv;
 
 import net.jodah.typetools.TypeResolver;
-import org.brutusin.commons.json.JsonHelper;
+import org.brutusin.commons.json.spi.JsonCodec;
 import org.brutusin.commons.json.spi.JsonSchema;
 
 /**
@@ -34,16 +34,16 @@ public final class JsonService<I, O> {
     private final Class<I> inputClass;
     private final Class<O> outputClass;
 
-    public JsonService(String id, JsonAction action, JsonHelper jsonHelper) {
+    public JsonService(String id, JsonAction action) {
         this.id = id;
         this.action = action;
          Class<?>[] types = TypeResolver.resolveRawArguments(JsonAction.class, action.getClass());
         this.inputClass = (Class<I>) types[0];
         this.outputClass = (Class<O>) types[1];
-        this.inputSchema = jsonHelper.getSchemaHelper().getSchemaString(this.inputClass);
-        this.outputSchema = jsonHelper.getSchemaHelper().getSchemaString(this.outputClass);
+        this.inputSchema = JsonCodec.getInstance().getSchemaString(this.inputClass);
+        this.outputSchema = JsonCodec.getInstance().getSchemaString(this.outputClass);
         try {
-            this.validationInputSchema = jsonHelper.getSchemaHelper().getSchema(jsonHelper.getSchemaHelper().getSchemaString(this.inputClass));
+            this.validationInputSchema = JsonCodec.getInstance().parseSchema(JsonCodec.getInstance().getSchemaString(this.inputClass));
         } catch (Exception ex) {
             throw new Error(ex);
         }

@@ -30,9 +30,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.brutusin.commons.Pair;
-import org.brutusin.commons.json.JsonHelper;
 import org.brutusin.commons.json.ParseException;
 import org.brutusin.commons.json.ValidationException;
+import org.brutusin.commons.json.spi.JsonCodec;
 import org.brutusin.commons.utils.Miscellaneous;
 import org.brutusin.jsonsrv.caching.CachingInfo;
 import org.brutusin.jsonsrv.caching.ConditionalCachingInfo;
@@ -96,7 +96,7 @@ public class JsonServlet extends HttpServlet {
                 renderer = new DefaultRenderer();
             }
             renderer.init(getServletConfig().getInitParameter(INIT_PARAM_RENDERER_PARAM));
-            stringArraySchema = JsonHelper.getInstance().getSchemaHelper().getSchemaString(String[].class);
+            stringArraySchema = JsonCodec.getInstance().getSchemaString(String[].class);
 
             Map<String, JsonAction> actions = loadActions();
             ServiceItem[] serviceItems = new ServiceItem[actions.size()];
@@ -104,7 +104,7 @@ public class JsonServlet extends HttpServlet {
             for (Map.Entry<String, JsonAction> entry : actions.entrySet()) {
                 String id = entry.getKey();
                 JsonAction action = entry.getValue();
-                JsonService service = new JsonService(id, action, JsonHelper.getInstance());
+                JsonService service = new JsonService(id, action);
                 services.put(id, service);
                 ServiceItem si = new ServiceItem();
                 si.setId(id);
@@ -181,14 +181,14 @@ public class JsonServlet extends HttpServlet {
                     json = this.stringArraySchema;
                 } else {
                     jsonResponse = listServices();
-                    json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
+                    json = JsonCodec.getInstance().transform(jsonResponse);
                 }
             } else {
                 service = services.get(id);
                 if (service == null) {
                     jsonResponse = new JsonResponse();
                     jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.serviceNotFound));
-                    json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
+                    json = JsonCodec.getInstance().transform(jsonResponse);
                 } else {
                     if (schemaMode == SchemaMode.I) {
                         json = service.getInputSchema();
@@ -198,7 +198,7 @@ public class JsonServlet extends HttpServlet {
                         if (service.getAction() instanceof UnsafeAction && req.getMethod().equals("GET")) {
                             jsonResponse = new JsonResponse();
                             jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.invalidMethodError));
-                            json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
+                            json = JsonCodec.getInstance().transform(jsonResponse);
                         } else {
                             String inputStr = req.getParameter(PARAM_INPUT);
                             prepareActionContext(req, resp);
@@ -207,7 +207,7 @@ public class JsonServlet extends HttpServlet {
                                 jsonResponse = result.getElement1();
                                 cachingInfo = result.getElement2();
                                 if (jsonResponse != null) {
-                                    json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
+                                    json = JsonCodec.getInstance().transform(jsonResponse);
                                 } else {
                                     json = null;
                                 }
@@ -221,7 +221,7 @@ public class JsonServlet extends HttpServlet {
         } catch (Exception ex) {
             jsonResponse = new JsonResponse();
             jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.internalError, Miscellaneous.getRootCauseMessage(ex)));
-            json = JsonHelper.getInstance().getDataHelper().transform(jsonResponse);
+            json = JsonCodec.getInstance().transform(jsonResponse);
             Logger.getLogger(JsonServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
         if (jsonResponse != null && jsonResponse.getError() != null) {
@@ -310,7 +310,7 @@ public class JsonServlet extends HttpServlet {
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
             String fileContents = Miscellaneous.toString(url.openStream(), "UTF-8");
-            ActionMapping[] ams = JsonHelper.getInstance().getDataHelper().parse(fileContents, ActionMapping[].class);
+            ActionMapping[] ams = JsonCodec.getInstance().parse(fileContents, ActionMapping[].class);
             if (ams
                     != null) {
                 for (int i = 0; i < ams.length; i++) {
@@ -352,8 +352,8 @@ public class JsonServlet extends HttpServlet {
             input = null;
         } else {
             try {
-                JsonHelper.getInstance().getSchemaHelper().validate(service.getValidationInputSchema(), inputStr);
-                input = JsonHelper.getInstance().getDataHelper().parse(inputStr, service.getInputClass());
+                service.getValidationInputSchema().validate(JsonCodec.getInstance().parse(inputStr));
+                input = JsonCodec.getInstance().parse(inputStr, service.getInputClass());
             } catch (ParseException ex) {
                 jsonResponse.setError(jsonResponse.new ErrorDescription(JsonResponse.Error.parseError, Miscellaneous.getRootCauseMessage(ex)));
                 return ret;
