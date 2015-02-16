@@ -34,7 +34,7 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
       - [SpringJsonServlet](#springjsonservlet)
     - [Service implementation](#service-implementation)
       - [SafeAction](#safeaction)
-      - [UnSafeAction](#unsafeaction)
+      - [UnsafeAction](#unsafeaction)
     - [Running](#running)
   - [Action life-cycle](#action-life-cycle)
   - [Implementation details](#implementation-details)
@@ -161,11 +161,25 @@ The framework will automatically find all beans of the spring context that are i
 Notice that the same action class can be used by different services, an dependency injection can be used. 
 
 ###Service implementation
-Business is coded in custom classes extending either from [SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java), or [UnSafeAction](src/main/java/org/brutusin/jsonsrv/UnSafeAction.java), and using POJOs to define input/output parameters.
+Business is coded in custom classes extending either from [SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java), or [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java), and using POJOs to define input/output parameters. 
+
+According to [rfc7231 4.2.1](http://www.rfc-editor.org/rfc/rfc7231.txt):
+> ... Request methods are considered "safe" if their defined semantics are
+   essentially read-only; i.e., the client does not request, and does
+   not expect, any state change on the origin server as a result of
+   applying a safe method to a target resource.  Likewise, reasonable
+   use of a safe method is not expected to cause any harm, loss of
+   property, or unusual burden on the origin server...
 
 ####SafeAction
+[SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java) is used to implement *safe* business logic, that is, this logic that has no side-effects expected by the user.
 
-####UnSafeAction
+Results of these actions are cacheable, and both `GET` and `POST` request methods are supported.
+
+####UnsafeAction
+On the other side, [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java) is used to implement *unsafe* business logic, that has side-effects expected by the user, like for example, business model state changes.
+
+Results of these actions are not cacheable, and only `POST` request method is supported.
 
 Examples:
 ```java
