@@ -29,12 +29,12 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
   - [Definitions](#definitions)
   - [Usage](#usage)
     - [Maven dependency](#maven-dependency)
-    - [Framework servlets](#framework-servlets)
-      - [JsonServlet](#jsonservlet)
-      - [SpringJsonServlet](#springjsonservlet)
     - [Service implementation](#service-implementation)
       - [SafeAction](#safeaction)
       - [UnsafeAction](#unsafeaction)
+    - [Service registration](#service-registration)
+      - [JsonServlet](#jsonservlet)
+      - [SpringJsonServlet](#springjsonservlet)
     - [Running](#running)
   - [Action life-cycle](#action-life-cycle)
   - [Implementation details](#implementation-details)
@@ -74,91 +74,6 @@ This library is meant to be used by a java web module. If you are using maven, a
 Click [here](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.brutusin%22%20a%3A%22jsonsrv%22) to see the latest available version released to the Maven Central Repository.
 
 If you are not using maven and need help you can ask [here](https://github.com/brutusin/jsonsrv/issues).
-
-###Framework servlets
-Two alternative framework servlets are available, covering two different configuration scenarios: 
-* [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java): Base servlet that loads service definitions from `jsonsrv.json` (explained later). No dependency injection supported.
-* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java): Extending the previous servlet, this servlet loads the service definitions from [Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html) configuration XML files (by default `jsonsrv.xml`). Spring dependencies have a `<scope>provided</scope>` in this module, so in order to use this servlet, [org.springframework:spring-context](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.springframework%22%20a%3A%22spring-context%22) artifacts must be provided by the client module at runtime. 
-
-####JsonServlet
-#####Web module configuration
-In the `web.xml` configure the following mapping for this framework servlet:
-
-```xml
-...
-<servlet>
-    <servlet-name>json-servlet</servlet-name>
-    <servlet-class>org.brutusin.jsonsrv.JsonServlet</servlet-class>
-</servlet>
-<servlet-mapping>
-    <servlet-name>json-servlet</servlet-name>
-    <url-pattern>/srv</url-pattern>
-</servlet-mapping>
-...
-```
-This way, all requests under the `/srv` path will be processed by it.
-
-#####Service registration
-Register the actions in order to the framework can find them, by creating a `jsonsrv.json` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.json")`).
-
-Example:
-```json
-[
-  {
-    "id": "hello",
-    "className": "org.brutusin.jsonsrv.example.complex.HelloWorldAction"
-  },
-  {
-    "id": "date",
-    "className": "org.brutusin.jsonsrv.example.GetDateAction"
-  }
-]
-```
-
-####SpringJsonServlet
-#####Web module configuration
-In the `web.xml` configure the following mapping for this framework servlet:
-
-```xml
-...
-<servlet>
-    <servlet-name>json-servlet</servlet-name>
-    <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
-    <init-param>
-        <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
-        <param-name>spring-cfg</param-name>
-        <param-value>/application-context.xml</param-value>    
-    </init-param>
-</servlet>
-<servlet-mapping>
-    <servlet-name>json-servlet</servlet-name>
-    <url-pattern>/srv</url-pattern>
-</servlet-mapping>
-...
-```
-
-#####Service registration
-Register the actions in order to the framework can find them, by creating a `jsonsrv.xml` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.xml")`).
-
-Example:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans 
-	   					   http://www.springframework.org/schema/beans/spring-beans.xsd">
-
-    <bean id="date" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
-        <property name="datePattern" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX"/>
-    </bean>
-    <bean id="time" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
-        <property name="datePattern" value="h:mm a"/>
-    </bean>
-</beans>
-```
-The framework will automatically find all beans of the spring context that are instances of `JsonAction`, and will use their `id` property as id for the service.
-
-Notice that the same action class can be used by different services, an dependency injection can be used. 
 
 ###Service implementation
 Business is coded in custom classes extending either from [SafeAction](src/main/java/org/brutusin/jsonsrv/SafeAction.java), or [UnsafeAction](src/main/java/org/brutusin/jsonsrv/UnsafeAction.java), and using POJOs to define input/output parameters. 
@@ -207,6 +122,90 @@ public class CheckoutAction extends UnsafeAction<Void, Void> {
     }
 }
 ```
+###Service registration
+Two alternative framework servlets are available, covering two different configuration scenarios: 
+* [JsonServlet](src/main/java/org/brutusin/jsonsrv/JsonServlet.java): Base servlet that loads service definitions from `jsonsrv.json` (explained later). No dependency injection supported.
+* [SpringJsonServlet](src/main/java/org/brutusin/jsonsrv/SpringJsonServlet.java): Extending the previous servlet, this servlet loads the service definitions from [Spring](http://docs.spring.io/spring/docs/current/spring-framework-reference/html/xsd-config.html) configuration XML files (by default `jsonsrv.xml`). Spring dependencies have a `<scope>provided</scope>` in this module, so in order to use this servlet, [org.springframework:spring-context](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.springframework%22%20a%3A%22spring-context%22) artifacts must be provided by the client module at runtime. 
+
+####JsonServlet
+*Web module configuration*
+In the `web.xml` configure the following mapping for this framework servlet:
+
+```xml
+...
+<servlet>
+    <servlet-name>json-servlet</servlet-name>
+    <servlet-class>org.brutusin.jsonsrv.JsonServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+    <servlet-name>json-servlet</servlet-name>
+    <url-pattern>/srv</url-pattern>
+</servlet-mapping>
+...
+```
+This way, all requests under the `/srv` path will be processed by it.
+
+*Service registration*
+Register the actions in order to the framework can find them, by creating a `jsonsrv.json` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.json")`).
+
+Example:
+```json
+[
+  {
+    "id": "hello",
+    "className": "org.brutusin.jsonsrv.example.complex.HelloWorldAction"
+  },
+  {
+    "id": "date",
+    "className": "org.brutusin.jsonsrv.example.GetDateAction"
+  }
+]
+```
+
+####SpringJsonServlet
+*Web module configuration*
+In the `web.xml` configure the following mapping for this framework servlet:
+
+```xml
+...
+<servlet>
+    <servlet-name>json-servlet</servlet-name>
+    <servlet-class>org.brutusin.jsonsrv.SpringJsonServlet</servlet-class>
+    <init-param>
+        <!-- Optional path to an aditional cfg file. See "Servlets init-params" section-->
+        <param-name>spring-cfg</param-name>
+        <param-value>/application-context.xml</param-value>    
+    </init-param>
+</servlet>
+<servlet-mapping>
+    <servlet-name>json-servlet</servlet-name>
+    <url-pattern>/srv</url-pattern>
+</servlet-mapping>
+...
+```
+
+*Service registration*
+Register the actions in order to the framework can find them, by creating a `jsonsrv.xml` file in the root namespace (so it can be loaded by `getClassLoader().getResources("jsonsrv.xml")`).
+
+Example:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   					   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="date" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
+        <property name="datePattern" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX"/>
+    </bean>
+    <bean id="time" class="org.brutusin.jsonsrv.example.spring.GetDateAction">
+        <property name="datePattern" value="h:mm a"/>
+    </bean>
+</beans>
+```
+The framework will automatically find all beans of the spring context that are instances of `JsonAction`, and will use their `id` property as id for the service.
+
+Notice that the same action class can be used by different services, an dependency injection can be used. 
 
 ###Running
 
