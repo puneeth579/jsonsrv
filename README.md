@@ -240,9 +240,12 @@ This action will serve all the requests to the service, so [thread-safety issues
 
 On request processing the following methods are executed: 
 
-1. `getCachingInfo(I input)`: That returns caching information for this request.
-2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method, this method is or is not executed. (see [caching section](#caching) for more details).
-
+- For [SafeActions](src/main/java/org/brutusin/jsonsrv/SafeAction.java):
+  1. `getCachingInfo(I input)`: That returns caching information for this request.
+  2. `execute(I input)`: Depending on the client request being conditional, and on the value returned by the previous method, this method is or is not executed. (see [caching section](#caching) for more details).
+- For [UnafeActions](src/main/java/org/brutusin/jsonsrv/SafeAction.java):
+ 1. `execute(I input)`
+ 
 ## Implementation details
 ###JSON SPI
 This module makes use of the [JSON SPI](https://github.com/brutusin/commons/tree/master/src/main/java/org/brutusin/commons/json/spi), so a JSON service provider like [json-codec-jackson](https://github.com/brutusin/json-codec-jackson) is needed at runtime. The choosen provider will determine JSON serialization, validation, parsing and schema generation.
