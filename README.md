@@ -116,8 +116,8 @@ public class CheckoutAction extends UnsafeAction<Void, Void> {
     public void execute() throws Exception {
         // get shopping cart from HttpSession
         // start transaction
-        // perform payment
         // update stock
+        // perform payment
         // end transaction
     }
 }
