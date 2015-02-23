@@ -394,9 +394,9 @@ A complete example project is available at [jsonsrv-example](https://github.com/
 ##Main stack
 This module could not be possible without:
 * Now moved to [json-codec-jackson](https://github.com/brutusin/json-codec-jackson), but key libraries for the project inception:
-  * [FasterXML/jackson stack](https://github.com/FasterXML/jackson): The underlying JSON stack for the .
-  * [com.fasterxml.jackson.module:jackson-module-jsonSchema](https://github.com/FasterXML/jackson-module-jsonSchema): For java class to JSON schema mapping 
-  * [com.github.fge:json-schema-validator](https://github.com/fge/json-schema-validator): For validation against a JSON schema
+  * [FasterXML/jackson stack](https://github.com/FasterXML/jackson): The underlying JSON stack.
+  * [com.fasterxml.jackson.module:jackson-module-jsonSchema](https://github.com/FasterXML/jackson-module-jsonSchema): For java class to JSON schema mapping. 
+  * [com.github.fge:json-schema-validator](https://github.com/fge/json-schema-validator): For validation against a JSON schema.
 * [Spring IoC](http://projects.spring.io/spring-framework/): Used optionally to load service mappings from Spring
 
 ## Brutusin dependent modules
