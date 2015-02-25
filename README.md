@@ -58,7 +58,7 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
   - [License](#license)
 
 ##Definitions
-The following concepts are used throughout the rest of the documentation, and must be defined:
+The following concepts are used throughout the rest of the documentation, and must be defined for a better understanding:
 * **Action**: An action is a class extending [JsonAction](src/main/java/org/brutusin/jsonsrv/JsonAction.java). Sometimes it is used to refer to a concrete instance.
 * **Service**: A service is an exposed action instance (published by the framework), bound (also "mapped") to a unique identifier `id`;
 
