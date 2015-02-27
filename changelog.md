@@ -1,5 +1,7 @@
 #org.brutusin:jsonsrv changelog
 
+##2.3.0 (2015/02/27)
+* Issue #1: Service description support
 ##2.2.0 (2015/02/16)
 * Safe/Unsafe actions
 * Renderer new param: JsonService
