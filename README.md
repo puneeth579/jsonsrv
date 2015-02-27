@@ -367,6 +367,8 @@ For each action, an optional description file can be attached, containing user d
 * Given an action class with qualified `foo.Bar`
 * The description file will be searched at `foo/Bar.md`
 
+The following tool is provided to help with markdown validation: http://brutusin.org/utils/markdown
+
 ##Configuration and extensions
 
 ### Custom renderers
