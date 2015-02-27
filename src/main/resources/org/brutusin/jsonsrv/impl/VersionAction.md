@@ -1,1 +1,1 @@
-This service informs about the [jsonsrv](https://github.com/brutusin/jsonsrv) being used.
+This service informs about the [jsonsrv](https://github.com/brutusin/jsonsrv) version being used.
