@@ -16,6 +16,7 @@
 package org.brutusin.jsonsrv;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -54,6 +55,8 @@ public class JsonServlet extends HttpServlet {
     public static final String PARAM_ID = "id";
     public static final String PARAM_INPUT = "input";
     public static final String PARAM_SCHEMA = "schema";
+
+    private static final Logger LOGGER = Logger.getLogger(JsonServlet.class.getName());
 
     private static final List<String> SUPPORTED_PARAMS = Miscellaneous.createList(INIT_PARAM_RENDERER, INIT_PARAM_DISABLE_SCHEMA, INIT_PARAM_RENDERER_PARAM, INIT_PARAM_ACCESS_CONTROL);
 
@@ -104,11 +107,13 @@ public class JsonServlet extends HttpServlet {
             for (Map.Entry<String, JsonAction> entry : actions.entrySet()) {
                 String id = entry.getKey();
                 JsonAction action = entry.getValue();
-                JsonService service = new JsonService(id, action);
+                String description = loadDescription(action);
+                JsonService service = new JsonService(id, action, description);
                 services.put(id, service);
                 ServiceItem si = new ServiceItem();
                 si.setId(id);
                 si.setSafe(action instanceof SafeAction);
+                si.setDescription(description);
                 serviceItems[i++] = si;
             }
             this.servicesResponse.setValue(serviceItems);
@@ -330,6 +335,16 @@ public class JsonServlet extends HttpServlet {
         return ret;
     }
 
+    private String loadDescription(JsonAction action) throws IOException {
+        String name = action.getClass().getName().replace(".", "/") + ".md";
+        InputStream is = action.getClass().getClassLoader().getResourceAsStream(name);
+        if (is == null) {
+            LOGGER.warning("Could not find service description resource '" + name + "'. Consider creating it in markdown format for better service maintainability");
+            return null;
+        } 
+        return Miscellaneous.toString(is, "UTF-8");
+    }
+
     private JsonResponse listServices() {
         return servicesResponse;
     }
@@ -365,7 +380,7 @@ public class JsonServlet extends HttpServlet {
         try {
             boolean execute = true;
             if (action instanceof SafeAction) {
-                CachingInfo cachingInfo = ((SafeAction)action).getCachingInfo(input);
+                CachingInfo cachingInfo = ((SafeAction) action).getCachingInfo(input);
                 ret.setElement2(cachingInfo);
                 if (etag != null && cachingInfo != null) {
                     if (cachingInfo instanceof ConditionalCachingInfo) {
@@ -433,6 +448,7 @@ public class JsonServlet extends HttpServlet {
     private static class ServiceItem {
 
         private String id;
+        private String description;
         private boolean safe;
 
         public String getId() {
@@ -449,6 +465,14 @@ public class JsonServlet extends HttpServlet {
 
         public void setSafe(boolean safe) {
             this.safe = safe;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
         }
     }
 }

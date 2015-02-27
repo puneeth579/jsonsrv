@@ -27,6 +27,7 @@ public final class JsonService<I, O> {
 
     private final String id;
     private final JsonAction<I, O> action;
+    private final String description;
 
     private final String inputSchema;
     private final String outputSchema;
@@ -34,10 +35,11 @@ public final class JsonService<I, O> {
     private final Class<I> inputClass;
     private final Class<O> outputClass;
 
-    public JsonService(String id, JsonAction action) {
+    public JsonService(String id, JsonAction action, String description) {
         this.id = id;
         this.action = action;
-         Class<?>[] types = TypeResolver.resolveRawArguments(JsonAction.class, action.getClass());
+        this.description = description;
+        Class<?>[] types = TypeResolver.resolveRawArguments(JsonAction.class, action.getClass());
         this.inputClass = (Class<I>) types[0];
         this.outputClass = (Class<O>) types[1];
         this.inputSchema = JsonCodec.getInstance().getSchemaString(this.inputClass);
