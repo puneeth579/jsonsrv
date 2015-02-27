@@ -46,7 +46,7 @@ Motivated by the creation of Javascript/AJAX/JSON web interfaces, the goal of th
       - [Content-Type header](#content-type-header)
       - [Caching](#caching)
       - [Getting servlet objects from actions](#getting-servlet-objects-from-actions)
-  - [Descripting services](#descripting-services)
+  - [Adding service documentation](#adding-service-documentation)
   - [Configuration and extensions](#configuration-and-extensions)
     - [Custom renderers](#custom-renderers)
     - [Servlets init params](#servlets-init-params)
@@ -361,7 +361,7 @@ Despite of being business oriented, actions might need to use some servlet-relat
 
 For this purpose,  the helper class [JsonActionContext](src/main/java/org/brutusin/jsonsrv/JsonActionContext.java) exists. By making use of thread-locality, this class lets the executing action access their current servlet-related objects, by simply calling `JsonActionContext.getInstance()` in a static way.
 
-##Descripting services
+##Adding service documentation
 For each action, an optional description file can be attached, containing user documentation in [markdown](http://daringfireball.net/projects/markdown/) syntax. The framework automatically looks for this resource under the following classloader name: 
 
 * Given an action class with qualified `foo.Bar`
