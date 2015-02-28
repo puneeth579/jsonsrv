@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -250,18 +251,11 @@ public class JsonServlet extends HttpServlet {
             }
         }
         if (cachingInfo == null) {
-            resp.addDateHeader("Expires", 0);
-            resp.addHeader("Cache-Control", "max-age=0, no-cache, no-store");
-            resp.addHeader("Pragma", "no-cache");
+            addNoCacheHeaders(req, resp);
             renderer.service(getServletConfig(), req, resp, json, schemaMode, service);
         } else if (cachingInfo instanceof ConditionalCachingInfo) {
             ConditionalCachingInfo cc = (ConditionalCachingInfo) cachingInfo;
-            resp.addDateHeader("Expires", 0);
-            resp.addHeader("Cache-Control", "private, must-revalidate");
-            resp.setHeader("ETag", "W/\"" + cc.getEtag() + "\"");
-            if (req.getMethod().equals("POST")) {
-                addContentLocation(req, resp);
-            }
+            addConditionalCacheHeaders(req, resp, cc.getEtag());
             if (json != null) {
                 renderer.service(getServletConfig(), req, resp, json, schemaMode, service);
             } else {
@@ -269,15 +263,34 @@ public class JsonServlet extends HttpServlet {
             }
         } else if (cachingInfo instanceof ExpiringCachingInfo) {
             ExpiringCachingInfo ec = (ExpiringCachingInfo) cachingInfo;
-            // max-age overrides expires. For legacy proxies (intermedy) cache control is ignored and no cache is performed, the desired behaviour for a private cache. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3
-            resp.addDateHeader("Expires", 0);
-            resp.addHeader("Cache-Control", "max-age=" + ec.getMaxAge() + ", private, must-revalidate");
-            if (req.getMethod().equals("POST")) {
-                addContentLocation(req, resp);
-            }
+            addExpiresCacheHeaders(req, resp, ec.getMaxAge());
             renderer.service(getServletConfig(), req, resp, json, schemaMode, service);
         } else {
             throw new AssertionError();
+        }
+    }
+
+    private void addNoCacheHeaders(HttpServletRequest req, HttpServletResponse resp) {
+        resp.addDateHeader("Expires", 0);
+        resp.addHeader("Cache-Control", "max-age=0, no-cache, no-store");
+        resp.addHeader("Pragma", "no-cache");
+    }
+
+    private void addConditionalCacheHeaders(HttpServletRequest req, HttpServletResponse resp, String etag) {
+        resp.addDateHeader("Expires", 0);
+        resp.addHeader("Cache-Control", "private, must-revalidate");
+        resp.setHeader("ETag", "W/\"" + etag + "\"");
+        if (req.getMethod().equals("POST")) {
+            addContentLocation(req, resp);
+        }
+    }
+
+    private void addExpiresCacheHeaders(HttpServletRequest req, HttpServletResponse resp, int maxAge) {
+        // max-age overrides expires. For legacy proxies (intermedy) cache control is ignored and no cache is performed, the desired behaviour for a private cache. See http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.3
+        resp.addDateHeader("Expires", 0);
+        resp.addHeader("Cache-Control", "max-age=" + maxAge + ", private, must-revalidate");
+        if (req.getMethod().equals("POST")) {
+            addContentLocation(req, resp);
         }
     }
 
@@ -310,7 +323,7 @@ public class JsonServlet extends HttpServlet {
     }
 
     protected Map<String, JsonAction> loadActions() throws Exception {
-        Map<String, JsonAction> ret = new HashMap();
+        Map<String, JsonAction> ret = new LinkedHashMap();
         Enumeration<URL> urls = getClassLoader().getResources("jsonsrv.json");
         while (urls.hasMoreElements()) {
             URL url = urls.nextElement();
@@ -341,7 +354,7 @@ public class JsonServlet extends HttpServlet {
         if (is == null) {
             LOGGER.warning("Could not find service description resource '" + name + "'. Consider creating it in markdown format for better service maintainability");
             return null;
-        } 
+        }
         return Miscellaneous.toString(is, "UTF-8");
     }
 
