@@ -78,4 +78,8 @@ public final class JsonService<I, O> {
     public Class<O> getOutputClass() {
         return outputClass;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
