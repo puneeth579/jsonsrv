@@ -26,7 +26,7 @@ package org.brutusin.jsonsrv;
  * @param <I> Input POJO class.
  * @param <O> Output POJO class
  */
-abstract class JsonAction<I, O> {
+public abstract class JsonAction<I, O> {
 
     /**
      * Business logic method.
@@ -36,4 +36,6 @@ abstract class JsonAction<I, O> {
      * @throws Exception
      */
     public abstract O execute(I input) throws Exception;
+    
+    JsonAction(){}
 }
