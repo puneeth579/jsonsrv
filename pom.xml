@@ -9,7 +9,7 @@
     <groupId>org.brutusin</groupId>
     <artifactId>jsonsrv</artifactId>
     <packaging>jar</packaging>   
-    <version>2.3.1-SNAPSHOT</version>
+    <version>2.3.1</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A self-describing, java web framework for easily exposing business methods as JSON RPC services over HTTP</description>
     <url>https://github.com/brutusin/jsonsrv</url>
@@ -28,7 +28,7 @@
         <url>https://github.com/brutusin/jsonsrv</url>
         <connection>scm:git:https://github.com/brutusin/jsonsrv.git</connection>
         <developerConnection>scm:git:https://github.com/brutusin/jsonsrv.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v2.3.1</tag>
     </scm>
     <dependencies>
         <dependency>
