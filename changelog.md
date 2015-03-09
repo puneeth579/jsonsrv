@@ -1,5 +1,8 @@
 #org.brutusin:jsonsrv changelog
 
+##2.3.1 (2015/03/09)
+* Upgraded commons dependency
+
 ##2.3.0 (2015/02/27)
 * [Issue #1](https://github.com/brutusin/jsonsrv/issues/1): Service description support
 
